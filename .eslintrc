@@ -1,0 +1,4 @@
+{
+    "extends": "eslint-config-xbsoftware/1__double_quotes_and_tabs",
+    "env": { "browser": true }
+}
