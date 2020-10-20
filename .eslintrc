@@ -1,4 +1,22 @@
 {
-    "extends": "eslint-config-xbsoftware/1__double_quotes_and_tabs",
-    "env": { "browser": true }
+    "env": { "browser": true },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint"
+    ],
+    "extends": [
+        // "plugin:react/recommended",
+        "plugin:@typescript-eslint/recommended"
+        // "prettier/@typescript-eslint",
+        // "plugin:prettier/recommended"
+    ],
+    "rules": {
+      // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
+      // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    }
+  
 }
