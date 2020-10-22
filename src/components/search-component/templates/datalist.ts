@@ -71,13 +71,18 @@ const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): s
         display: block;
         text-align: left;
         padding: 0.8em 1em 0.8em 1em;
-        color: #999;
+        color: #3288C1;
         cursor: pointer;
+        background: #E6F3FD;
+        margin: 10px 20px;
+        border-radius: 7px;
+        border: #C7E0EE 2px solid;
+        font-weight: 700;
     }
 
     #${config.datalistId}__ul li:hover {
-        background: #4e00f0;
-        color: #f00;
+        background: #007DAF;
+        color: #fff;
     }
 
     .${config.datalistId}__wrapper {
