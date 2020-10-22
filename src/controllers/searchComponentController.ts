@@ -1,5 +1,6 @@
 import { UsersModel } from "../models/usersModel";
 import { SearchComponent } from "../components/search-component";
+import { IUserModelItem } from "../interfaces/IUserModelItem";
 export class SearchComponentController {
     private tagName: string;
     private usersModel: UsersModel;
@@ -31,10 +32,47 @@ export class SearchComponentController {
         });
     }
 
+    private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[]): void {
+        const templateConfig: {datalistId: string, ctrlButtons: string} = SearchComponent.getTemplateConfig();
+        const datalistNode: HTMLElement | null =
+            SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__ul`);
+        const datalistInputNode: HTMLInputElement | null =
+            SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__input`);
+        const showListButton: HTMLInputElement | null =
+            SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__show`);
+        const hideListButton: HTMLInputElement | null =
+            SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
+
+        showListButton?.addEventListener("click", () => {
+            showListButton.classList.add("hidden");
+            hideListButton?.classList.remove("hidden");
+
+            datalistInputNode?.parentElement?.classList.add("active");
+
+            const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data);
+            SearchComponent.appendElements(datalistNode, listArr);
+        });
+
+        hideListButton?.addEventListener("click", () => {
+            hideListButton.classList.add("hidden");
+            showListButton?.classList.remove("hidden");
+
+            datalistInputNode?.parentElement?.classList.remove("active");
+        });
+
+
+        datalistInputNode?.addEventListener("input", (): void => {
+            const value: string = datalistInputNode.value;
+
+            const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data, value);
+            SearchComponent.appendElements(datalistNode, listArr);
+
+            datalistInputNode.parentElement?.classList.add("active");
+        });
+    }
+
     public async initSearchComponent(): Promise<string> {
         SearchComponent.init();
-        const templateConfig: {datalistId: string, ctrlButtons: string}
-            = SearchComponent.getTemplateConfig();
 
         Promise
             .all([this.usersModel.getUsers(), this.observeNodes()])
@@ -44,44 +82,7 @@ export class SearchComponentController {
                     return;
                 }
 
-                const datalistNode: HTMLElement | null
-                    = SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__ul`);
-
-                const datalistInputNode: HTMLInputElement | null
-                    = SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__input`);
-
-                const showListButton: HTMLInputElement | null
-                    = SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__show`);
-
-                const hideListButton: HTMLInputElement | null
-                    = SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
-
-                showListButton?.addEventListener("click", () => {
-                    showListButton.classList.add("hidden");
-                    hideListButton?.classList.remove("hidden");
-
-                    datalistInputNode?.parentElement?.classList.add("active");
-
-                    const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data);
-                    SearchComponent.appendElements(datalistNode, listArr);
-                });
-
-                hideListButton?.addEventListener("click", () => {
-                    hideListButton.classList.add("hidden");
-                    showListButton?.classList.remove("hidden");
-
-                    datalistInputNode?.parentElement?.classList.remove("active");
-                });
-
-
-                datalistInputNode?.addEventListener("input", (): void => {
-                    const value: string = datalistInputNode.value;
-
-                    const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data, value);
-                    SearchComponent.appendElements(datalistNode, listArr);
-
-                    datalistInputNode.parentElement?.classList.add("active");
-                });
+                this.addEventListeners(shadowRoot, data);
             });
 
         return `<${this.tagName}></${this.tagName}>`;
