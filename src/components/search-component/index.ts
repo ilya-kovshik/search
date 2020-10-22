@@ -42,7 +42,11 @@ export class SearchComponent extends HTMLElement {
 		return node.querySelector(selector) || null;
 	}
 
-	public static getDatalistItems(data: IUserModelItem[], filter = ""): HTMLElement[] {
+	public static getDatalistItems(
+		data: IUserModelItem[],
+		isItemSelectedClbck: (id: string) => boolean,
+		filter = ""
+	): HTMLElement[] {
 		const nodesArr: HTMLElement[] = [];
 
 		data
@@ -50,6 +54,11 @@ export class SearchComponent extends HTMLElement {
 			.forEach((el: IUserModelItem) => {
 				const listItem: HTMLElement = document.createElement("li");
 				listItem.appendChild(document.createTextNode(el.name));
+				listItem.setAttribute("data-id", el.id);
+
+				if(isItemSelectedClbck(el.id)) {
+					listItem.classList.add("selected");
+				}
 
 				nodesArr.push(listItem);
 			});

@@ -80,7 +80,8 @@ const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): s
         font-weight: 700;
     }
 
-    #${config.datalistId}__ul li:hover {
+    #${config.datalistId}__ul li:hover,
+    #${config.datalistId}__ul li.selected {
         background: #007DAF;
         color: #fff;
     }

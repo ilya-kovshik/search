@@ -65,7 +65,8 @@ export class SearchComponentController {
             SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
 
         showListButton?.addEventListener("click", () => {
-            const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data, datalistInputNode?.value);
+            const listArr: HTMLElement[] =
+                SearchComponent.getDatalistItems(data, this.usersModel.isItemSelected.bind(this.usersModel), datalistInputNode?.value);
 
             SearchComponent.appendElements(datalistNode, listArr);
             datalistInputNode?.parentElement?.classList.add("active");
@@ -82,7 +83,8 @@ export class SearchComponentController {
 
         datalistInputNode?.addEventListener("input", (): void => {
             const value: string = datalistInputNode.value;
-            const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data, value);
+            const listArr: HTMLElement[] =
+                SearchComponent.getDatalistItems(data, this.usersModel.isItemSelected.bind(this.usersModel), value);
 
             SearchComponent.appendElements(datalistNode, listArr);
             datalistInputNode.parentElement?.classList.add("active");
@@ -92,6 +94,22 @@ export class SearchComponentController {
                 hideListButton,
                 {hideBtnVissibile: true, showBtnVissibile: false}
             );
+        });
+
+        datalistNode?.addEventListener("click", (e: Event) => {
+            const target: HTMLElement = (<HTMLElement>e.target);
+
+            if(target.tagName.toLowerCase() === "li" && target.dataset.id) {
+                if(target.classList.contains("selected")) {
+                    target.classList.remove("selected");
+                    this.usersModel.unselectItem(target.dataset.id);
+
+                    return;
+                }
+
+                target.classList.add("selected");
+                this.usersModel.selectItem(target.dataset.id);
+            }
         });
     }
 
