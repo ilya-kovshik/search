@@ -1,12 +1,11 @@
-import {getDataListTemplate} from "./templates/datalist";
+import {getDataListTemplate, getDataListStyles} from "./templates/datalist";
 import {IUserModelItem} from "../../interfaces/IUserModelItem";
-
 export class SearchComponent extends HTMLElement {
 	public static component: HTMLElement;
 	private shadow;
-	private static templateConfig: {datalistId: string, datalistWrapperClassName: string} = {
+	private static templateConfig: {datalistId: string, ctrlButtons: string} = {
 		datalistId: "datalist",
-		datalistWrapperClassName: "datalist-wrapper"
+		ctrlButtons: "controls-buttons"
 	};
 
 	constructor() {
@@ -19,17 +18,23 @@ export class SearchComponent extends HTMLElement {
  	}
 
 	private render(): void {
-		console.log();
-		this.shadow.innerHTML = `
+		const template: HTMLTemplateElement = document.createElement("template");
+
+		template.innerHTML = `
+			<style>
+				${getDataListStyles(SearchComponent.templateConfig)}
+			</style>
 			${getDataListTemplate(SearchComponent.templateConfig)}
 		`;
+
+		this.shadowRoot?.appendChild(template.content.cloneNode(true));
 	}
 
 	public static init(): void {
 		window.customElements.define("search-component", SearchComponent);
 	}
 
-	public static getTemplateConfig(): {datalistId: string, datalistWrapperClassName: string} {
+	public static getTemplateConfig(): {datalistId: string, ctrlButtons: string} {
 		return SearchComponent.templateConfig;
 	}
 
@@ -37,15 +42,17 @@ export class SearchComponent extends HTMLElement {
 		return node.querySelector(selector) || null;
 	}
 
-	public static getDatalistOptions(data: IUserModelItem[]): HTMLElement[] {
+	public static getDatalistItems(data: IUserModelItem[], filter = ""): HTMLElement[] {
 		const nodesArr: HTMLElement[] = [];
 
-		data.forEach((el: IUserModelItem) => {
-			const option: HTMLElement = document.createElement("option");
-			option.setAttribute("value", el.name);
+		data
+			.filter(el => el.name.toLowerCase().includes(filter))
+			.forEach((el: IUserModelItem) => {
+				const listItem: HTMLElement = document.createElement("li");
+				listItem.appendChild(document.createTextNode(el.name));
 
-			nodesArr.push(option);
-		});
+				nodesArr.push(listItem);
+			});
 
 		return nodesArr;
 	}
