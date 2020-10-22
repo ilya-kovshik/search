@@ -10,6 +10,27 @@ export class SearchComponentController {
         this.usersModel = usersModel;
     }
 
+    private toggleControllsButtonsVisibility(
+        showButton: HTMLElement | null,
+        hideButton: HTMLElement | null,
+        config?: {hideBtnVissibile: boolean, showBtnVissibile: boolean}
+    ): void {
+        if(config) {
+            config.hideBtnVissibile ?
+                hideButton?.classList.remove("hidden"):
+                hideButton?.classList.add("hidden");
+
+            config.showBtnVissibile ?
+                showButton?.classList.remove("hidden"):
+                showButton?.classList.add("hidden");
+
+            return;
+        }
+
+        showButton?.classList.toggle("hidden");
+        hideButton?.classList.toggle("hidden");
+    }
+
     private observeNodes(): Promise<HTMLElement> {
         return new Promise((res) => {
             const observerCallback = (mutationsList: any) => {
@@ -44,30 +65,33 @@ export class SearchComponentController {
             SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
 
         showListButton?.addEventListener("click", () => {
-            showListButton.classList.add("hidden");
-            hideListButton?.classList.remove("hidden");
+            const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data, datalistInputNode?.value);
 
+            SearchComponent.appendElements(datalistNode, listArr);
             datalistInputNode?.parentElement?.classList.add("active");
 
-            const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data);
-            SearchComponent.appendElements(datalistNode, listArr);
+            this.toggleControllsButtonsVisibility(showListButton, hideListButton);
         });
 
         hideListButton?.addEventListener("click", () => {
-            hideListButton.classList.add("hidden");
-            showListButton?.classList.remove("hidden");
-
             datalistInputNode?.parentElement?.classList.remove("active");
+
+            this.toggleControllsButtonsVisibility(showListButton, hideListButton);
         });
 
 
         datalistInputNode?.addEventListener("input", (): void => {
             const value: string = datalistInputNode.value;
-
             const listArr: HTMLElement[] = SearchComponent.getDatalistItems(data, value);
-            SearchComponent.appendElements(datalistNode, listArr);
 
+            SearchComponent.appendElements(datalistNode, listArr);
             datalistInputNode.parentElement?.classList.add("active");
+
+            this.toggleControllsButtonsVisibility(
+                showListButton,
+                hideListButton,
+                {hideBtnVissibile: true, showBtnVissibile: false}
+            );
         });
     }
 
