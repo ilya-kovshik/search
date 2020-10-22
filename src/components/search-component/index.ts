@@ -33,7 +33,7 @@ export class SearchComponent extends HTMLElement {
 		return SearchComponent.templateConfig;
 	}
 
-	public static getElement(node: HTMLElement | ShadowRoot, selector: string): HTMLElement | null {
+	public static getElement(node: HTMLElement | ShadowRoot, selector: string): (HTMLElement | null) & (HTMLInputElement | null) {
 		return node.querySelector(selector) || null;
 	}
 
@@ -60,6 +60,18 @@ export class SearchComponent extends HTMLElement {
 		}
 
 		node.append(...elements);
+	}
+
+	public static getSelectedOption(datalist: HTMLElement | null, input: HTMLInputElement | null): HTMLElement | null {
+		if(!datalist || !input) {
+			return null;
+		}
+
+		const optionsArr: HTMLElement[] = [...datalist.getElementsByTagName("option")];
+		const selectedOption: HTMLElement | undefined =
+			optionsArr.find(el => el.getAttribute("value") === input.value);
+
+		return selectedOption || null;
 	}
 }
 
