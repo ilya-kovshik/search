@@ -154,18 +154,28 @@ export class SearchComponentController {
                 const id: string | undefined = parent.dataset.id;
 
                 if(id) {
-                    const selectedItem = datalistNode?.querySelector(`li[data-id="${id}"]`);
+                    const removeSelectedListItemEvent: CustomEvent = new CustomEvent("removeSelectedListItem", {
+                        detail: {
+                            id: parent.dataset.id
+                        }
+                    });
+                    const unselectDataListItemEvent: CustomEvent = new CustomEvent("unselectDataListItem", {
+                        detail: {
+                            id: parent.dataset.id
+                        }
+                    });
 
-                    selectedItem?.classList.remove("selected");
+                    rootNode.dispatchEvent(removeSelectedListItemEvent);
+                    rootNode.dispatchEvent(unselectDataListItemEvent);
+
                     this.usersModel.unselectItem(id);
-
-                    parent.remove();
 
                     if(!this.usersModel.isAnySelection()) {
                         const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
+                        const hideClearSelectionButtonEvent: Event = new Event("hideClearSelectionButton");
 
                         rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
-                        clearSelectionButton?.classList.add("hidden");
+                        rootNode.dispatchEvent(hideClearSelectionButtonEvent);
                     }
                 }
             }

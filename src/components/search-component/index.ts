@@ -129,6 +129,17 @@ export class SearchComponent extends HTMLElement {
 		this.addEventListener("hideClearSelectionButton", () => {
 			this.getClearSelectionButton().classList.remove("hidden");
 		});
+
+		this.addEventListener("removeSelectedListItem", (e: any) => {
+			const id: string = e.detail.id;
+			const selectedItem: HTMLElement = this.getSelectedList().querySelector(`li[data-id="${id}"]`) as HTMLElement;
+
+			selectedItem.remove();
+		});
+
+		this.addEventListener("unselectDataListItem", (e: any) => {
+			this.getDataListItem(e.detail.id)?.classList.remove("selected");
+		});
 	}
 
 	public static addSelectedListItem(selectedList: HTMLElement | null, config: {value: string, id: string}): void {
@@ -170,6 +181,9 @@ export class SearchComponent extends HTMLElement {
 
 	private getDatalist(): HTMLElement {
 		return this.shadow.querySelector(`#${SearchComponent.templateConfig.datalistId}__ul`) as HTMLElement;
+	}
+	private getDataListItem(id: string): HTMLElement {
+		return this.getDatalist().querySelector(`li[data-id="${id}"]`) as HTMLElement;
 	}
 	private getSelectedList(): HTMLElement {
 		return this.shadow.querySelector(`#${SearchComponent.templateConfig.selectedListId}`) as HTMLElement;
