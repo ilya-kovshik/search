@@ -70,38 +70,6 @@ export class SearchComponent extends HTMLElement {
 		return nodesArr;
 	}
 	private addEventListeners(): void {
-		this.addEventListener("unselectListItems", () => {
-			const listNode: HTMLElement = this.getDataList();
-
-			if(!listNode) {
-				return;
-			}
-
-			const selectedListItems: HTMLElement[] = [...listNode.querySelectorAll(`.selected`)] as HTMLElement[];
-
-			selectedListItems.forEach(el => {
-				el.classList.remove("selected");
-			});
-		});
-
-		this.addEventListener("clearSelectedList", () => {
-			const selectedList: HTMLElement = this.getSelectedList();
-
-			selectedList.querySelectorAll("li").forEach(el => {
-				if(el.dataset.id !== "all") {
-					el.remove();
-				}
-			});
-		});
-
-		this.addEventListener("showSelectedListDefaultItem", () => {
-			this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
-		});
-
-		this.addEventListener("hideClearSelectionButton", () => {
-			this.getClearSelectionButton().classList.add("hidden");
-		});
-
 		this.addEventListener("removeSelectedListItem", (e: any) => {
 			const id: string = e.detail.id;
 			const selectedItem: HTMLElement = this.getSelectedList().querySelector(`li[data-id="${id}"]`) as HTMLElement;
@@ -179,6 +147,14 @@ export class SearchComponent extends HTMLElement {
 
 			this.toggleControllsButtonsVisibility();
 		});
+
+		this.addEventListener("clearSelectionButtonClick", () => {
+			this.unselectDataListItems();
+			this.clearSelectList();
+
+			this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
+			this.getClearSelectionButton().classList.add("hidden");
+		});
 	}
 
 	private getDataList(): HTMLElement {
@@ -230,6 +206,28 @@ export class SearchComponent extends HTMLElement {
 	private toggleControllsButtonsVisibility(): void {
 		this.getShowButton()?.classList.toggle("hidden");
         this.getHideButton()?.classList.toggle("hidden");
+	}
+	private unselectDataListItems() {
+		const listNode: HTMLElement = this.getDataList();
+
+		if(!listNode) {
+			return;
+		}
+
+		const selectedListItems: HTMLElement[] = [...listNode.querySelectorAll(`.selected`)] as HTMLElement[];
+
+		selectedListItems.forEach(el => {
+			el.classList.remove("selected");
+		});
+	}
+	private clearSelectList() {
+		const selectedList: HTMLElement = this.getSelectedList();
+
+		selectedList.querySelectorAll("li").forEach(el => {
+			if(el.dataset.id !== "all") {
+				el.remove();
+			}
+		});
 	}
 }
 

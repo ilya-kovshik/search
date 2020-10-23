@@ -91,15 +91,7 @@ export class SearchComponentController {
         });
 
         clearSelectionButton?.addEventListener("click", () => {
-            const unselectListItemsEvent: Event = new Event("unselectListItems");
-            const clearSelectedListEvent: Event = new Event("clearSelectedList");
-            const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
-            const hideClearSelectionButtonEvent: Event = new Event("hideClearSelectionButton");
-
-            rootNode.dispatchEvent(unselectListItemsEvent);
-            rootNode.dispatchEvent(clearSelectedListEvent);
-            rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
-            rootNode.dispatchEvent(hideClearSelectionButtonEvent);
+            rootNode.dispatchEvent(new Event("clearSelectionButtonClick"));
 
             this.usersModel.unselectAllItems();
         });
