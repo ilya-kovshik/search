@@ -37,12 +37,12 @@ export class SearchComponentController {
     private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[], rootNode: HTMLElement): void {
         const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
 
-        const datalistNode: HTMLElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__ul`);
-        const datalistInputNode: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__input`);
+        const dataList: HTMLElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__ul`);
+        const searchInput: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__input`);
         const showListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__show`);
         const hideListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__hide`);
         const clearSelectionButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__clear-selection`);
-        const selectedListNode: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.selectedListId}`);
+        const selectedList: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.selectedListId}`);
 
         showListButton?.addEventListener("click", () => {
             const event: CustomEvent = new CustomEvent("showListButtonClick", {
@@ -56,13 +56,10 @@ export class SearchComponentController {
         });
 
         hideListButton?.addEventListener("click", () => {
-            const hideButtonClickEvent: Event = new Event("hideButtonClick");
-
-            rootNode.dispatchEvent(hideButtonClickEvent);
+            rootNode.dispatchEvent(new Event("hideButtonClick"));
         });
 
-
-        datalistInputNode?.addEventListener("input", (): void => {
+        searchInput?.addEventListener("input", (): void => {
             const searchInputEvent: CustomEvent = new CustomEvent("searchInput", {
                 detail: {
                     data,
@@ -73,21 +70,18 @@ export class SearchComponentController {
             rootNode.dispatchEvent(searchInputEvent);
         });
 
-        datalistNode?.addEventListener("click", (e: Event) => {
-            const target: HTMLElement = (<HTMLElement>e.target);
+        dataList?.addEventListener("click", (e: Event) => {
+            const dataListItemClickEvent: CustomEvent = new CustomEvent("dataListClick", {
+                detail: {
+                    id: (e.target as HTMLElement).dataset.id,
+                    target: e.target,
+                    modelUnselectItemClb: this.usersModel.unselectItem.bind(this.usersModel),
+                    modelIsAnySelectionClb: this.usersModel.isAnySelection.bind(this.usersModel),
+                    modelSelectItemClb: this.usersModel.selectItem.bind(this.usersModel)
+                }
+            });
 
-            if(target.tagName.toLowerCase() === "li" && target.dataset.id) {
-                const dataListItemClickEvent: CustomEvent = new CustomEvent("dataListItemClick", {
-                    detail: {
-                        id: target.dataset.id,
-                        modelUnselectItemClb: this.usersModel.unselectItem.bind(this.usersModel),
-                        modelIsAnySelectionClb: this.usersModel.isAnySelection.bind(this.usersModel),
-                        modelSelectItemClb: this.usersModel.selectItem.bind(this.usersModel)
-                    }
-                });
-
-                rootNode.dispatchEvent(dataListItemClickEvent);
-            }
+            rootNode.dispatchEvent(dataListItemClickEvent);
         });
 
         clearSelectionButton?.addEventListener("click", () => {
@@ -96,7 +90,7 @@ export class SearchComponentController {
             this.usersModel.unselectAllItems();
         });
 
-        selectedListNode?.addEventListener("click", (e: Event) => {
+        selectedList?.addEventListener("click", (e: Event) => {
             const target: HTMLElement = e.target as HTMLElement;
             const parent: HTMLElement | null = target.parentElement;
             const closeIconName: string | undefined = icons.close.split(" ").pop();

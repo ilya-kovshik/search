@@ -81,32 +81,36 @@ export class SearchComponent extends HTMLElement {
 			this.getDataListItem(e.detail.id)?.classList.remove("selected");
 		});
 
-		this.addEventListener("dataListItemClick", (e: any) => {
-			const id: string = e.detail.id;
-			const dataListItem: HTMLElement = this.getDataListItem(id);
-			const selectedListItem: HTMLElement = this.getSelectedListItem(id);
+		this.addEventListener("dataListClick", (e: any) => {
+			const target = e.detail.target;
 
-			if(dataListItem.classList.contains("selected")) {
-				dataListItem.classList.remove("selected");
+			if(target.tagName.toLowerCase() === "li" && target.dataset.id) {
+				const id: string = e.detail.id;
+				const dataListItem: HTMLElement = this.getDataListItem(id);
+				const selectedListItem: HTMLElement = this.getSelectedListItem(id);
 
-				e.detail.modelUnselectItemClb(id);
-				selectedListItem.remove();
+				if(dataListItem.classList.contains("selected")) {
+					dataListItem.classList.remove("selected");
 
-				if(!e.detail.modelIsAnySelectionClb()) {
-					this.getClearSelectionButton().classList.add("hidden");
+					e.detail.modelUnselectItemClb(id);
+					selectedListItem.remove();
 
-					this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
+					if(!e.detail.modelIsAnySelectionClb()) {
+						this.getClearSelectionButton().classList.add("hidden");
+
+						this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
+					}
+					return;
 				}
-				return;
-			}
 
-			dataListItem.classList.add("selected");
-			e.detail.modelSelectItemClb(id);
+				dataListItem.classList.add("selected");
+				e.detail.modelSelectItemClb(id);
 
-			this.getClearSelectionButton().classList.remove("hidden");
-			this.addSelectedListItem({id, value: dataListItem.textContent || ""});
+				this.getClearSelectionButton().classList.remove("hidden");
+				this.addSelectedListItem({id, value: dataListItem.textContent || ""});
 
-			this.getSelectedList().querySelector("li[data-id='all']")?.classList.add("hidden");
+				this.getSelectedList().querySelector("li[data-id='all']")?.classList.add("hidden");
+            }
 		});
 
 		this.addEventListener("searchInput", (e: any) => {
