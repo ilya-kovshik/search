@@ -33,15 +33,25 @@ export class SearchComponentController {
         });
     }
 
-    private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[], rootNode: HTMLElement): void {
+    private addEventListeners(rootNode: HTMLElement, data: IUserModelItem[]): void {
         const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
+        const shadowRoot: ShadowRoot = rootNode.shadowRoot as ShadowRoot;
 
-        const dataList: HTMLElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__ul`);
-        const searchInput: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__input`);
+        this.addShowListButtonEvent(shadowRoot, templateConfig, data, rootNode);
+        this.addHideListButtonEvents(shadowRoot, templateConfig, rootNode);
+        this.addDataListEvents(shadowRoot, templateConfig, rootNode);
+        this.addSelectedListEvents(shadowRoot, templateConfig, rootNode);
+        this.addSearchInputEvents(shadowRoot, templateConfig, data, rootNode);
+        this.addClearSelectionButtonEvents(shadowRoot, templateConfig, rootNode);
+    }
+
+    private addShowListButtonEvent(
+        shadowRoot: ShadowRoot,
+        templateConfig: ISearchComponentNames,
+        data: IUserModelItem[],
+        rootNode: HTMLElement
+    ): void {
         const showListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__show`);
-        const hideListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__hide`);
-        const clearSelectionButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__clear-selection`);
-        const selectedList: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.selectedListId}`);
 
         showListButton?.addEventListener("click", () => {
             const event: CustomEvent = new CustomEvent("showListButtonClick", {
@@ -53,21 +63,26 @@ export class SearchComponentController {
 
             rootNode.dispatchEvent(event);
         });
+    }
+
+    private addHideListButtonEvents(
+        shadowRoot: ShadowRoot,
+        templateConfig: ISearchComponentNames,
+        rootNode: HTMLElement
+    ): void {
+        const hideListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__hide`);
 
         hideListButton?.addEventListener("click", () => {
             rootNode.dispatchEvent(new Event("hideButtonClick"));
         });
+    }
 
-        searchInput?.addEventListener("input", (): void => {
-            const event: CustomEvent = new CustomEvent("searchInput", {
-                detail: {
-                    data,
-                    isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
-                }
-            });
-
-            rootNode.dispatchEvent(event);
-        });
+    private addDataListEvents(
+        shadowRoot: ShadowRoot,
+        templateConfig: ISearchComponentNames,
+        rootNode: HTMLElement
+    ): void {
+        const dataList: HTMLElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__ul`);
 
         dataList?.addEventListener("click", (e: Event) => {
             const event: CustomEvent = new CustomEvent("dataListClick", {
@@ -82,12 +97,14 @@ export class SearchComponentController {
 
             rootNode.dispatchEvent(event);
         });
+    }
 
-        clearSelectionButton?.addEventListener("click", () => {
-            rootNode.dispatchEvent(new Event("clearSelectionButtonClick"));
-
-            this.usersModel.unselectAllItems();
-        });
+    private addSelectedListEvents(
+        shadowRoot: ShadowRoot,
+        templateConfig: ISearchComponentNames,
+        rootNode: HTMLElement
+    ): void {
+        const selectedList: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.selectedListId}`);
 
         selectedList?.addEventListener("click", (e: Event) => {
             const event: Event = new CustomEvent("selectedListClick", {
@@ -102,18 +119,48 @@ export class SearchComponentController {
         });
     }
 
+    private addSearchInputEvents(
+        shadowRoot: ShadowRoot,
+        templateConfig: ISearchComponentNames,
+        data: IUserModelItem[],
+        rootNode: HTMLElement
+    ): void {
+        const searchInput: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__input`);
+
+        searchInput?.addEventListener("input", (): void => {
+            const event: CustomEvent = new CustomEvent("searchInput", {
+                detail: {
+                    data,
+                    isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
+                }
+            });
+
+            rootNode.dispatchEvent(event);
+        });
+    }
+
+    private addClearSelectionButtonEvents(
+        shadowRoot: ShadowRoot,
+        templateConfig: ISearchComponentNames,
+        rootNode: HTMLElement
+    ): void {
+        const clearSelectionButton: HTMLInputElement | null = 
+            shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__clear-selection`);
+
+        clearSelectionButton?.addEventListener("click", () => {
+            rootNode.dispatchEvent(new Event("clearSelectionButtonClick"));
+
+            this.usersModel.unselectAllItems();
+        });
+    }
+
     public async initSearchComponent(): Promise<string> {
         SearchComponent.init();
 
         Promise
             .all([this.usersModel.getUsers(), this.observeNodes()])
             .then(([data, node]) => {
-                const shadowRoot: ShadowRoot | null = node.shadowRoot;
-                if(!shadowRoot) {
-                    return;
-                }
-
-                this.addEventListeners(shadowRoot, data, node);
+                this.addEventListeners(node, data);
             });
 
         return `<${this.tagName}></${this.tagName}>`;
