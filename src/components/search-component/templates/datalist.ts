@@ -8,6 +8,7 @@ const getDataListTemplate = (config: {datalistId: string, ctrlButtons: string}):
             <div class="${config.ctrlButtons}">
                 <input type="button" class="${config.ctrlButtons}__show" value="o" />
                 <input type="button" class="${config.ctrlButtons}__hide hidden" value="x"/>
+                <input type="button" class="${config.ctrlButtons}__clear-selection hidden" value="Clear selection"/>
             </div>
         </div>
     `
@@ -94,6 +95,7 @@ const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): s
 
     .${config.ctrlButtons} {
         display: grid;
+        grid-auto-flow: column;
         grid-gap: 5px;
         align-items: center;
         justify-content: left;

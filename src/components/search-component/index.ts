@@ -89,5 +89,17 @@ export class SearchComponent extends HTMLElement {
 
 		return selectedOption || null;
 	}
+
+	public static unselectListItems(listNode: HTMLElement | null, selectionClassname: string): void {
+		if(!listNode) {
+			return;
+		}
+
+		const selectedListItems: HTMLElement[] = [...listNode.querySelectorAll(`.${selectionClassname}`)] as HTMLElement[];
+
+		selectedListItems.forEach(el => {
+			el.classList.remove(selectionClassname);
+		});
+	}
 }
 

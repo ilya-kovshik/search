@@ -63,6 +63,8 @@ export class SearchComponentController {
             SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__show`);
         const hideListButton: HTMLInputElement | null =
             SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
+        const clearSelectionButton: HTMLInputElement | null =
+            SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__clear-selection`);
 
         showListButton?.addEventListener("click", () => {
             const listArr: HTMLElement[] =
@@ -102,14 +104,29 @@ export class SearchComponentController {
             if(target.tagName.toLowerCase() === "li" && target.dataset.id) {
                 if(target.classList.contains("selected")) {
                     target.classList.remove("selected");
+
                     this.usersModel.unselectItem(target.dataset.id);
+
+                    if(!this.usersModel.isAnySelection()) {
+                        clearSelectionButton?.classList.add("hidden");
+                    }
 
                     return;
                 }
 
                 target.classList.add("selected");
                 this.usersModel.selectItem(target.dataset.id);
+
+                clearSelectionButton?.classList.remove("hidden");
             }
+        });
+
+        clearSelectionButton?.addEventListener("click", () => {
+            SearchComponent.unselectListItems(datalistNode, "selected");
+
+            this.usersModel.unselectAllItems();
+
+            clearSelectionButton.classList.add("hidden");
         });
     }
 

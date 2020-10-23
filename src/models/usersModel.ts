@@ -41,11 +41,19 @@ export class UsersModel implements IUsersModel {
         return this.selectedItemsIds.has(id);
     }
 
+    public isAnySelection(): boolean {
+        return this.selectedItemsIds.size !== 0;
+    }
+
     public selectItem(id: string): void {
         this.selectedItemsIds.add(id);
     }
 
     public unselectItem(id: string): void {
         this.selectedItemsIds.delete(id);
+    }
+
+    public unselectAllItems(): void {
+        this.selectedItemsIds.clear();
     }
 }
