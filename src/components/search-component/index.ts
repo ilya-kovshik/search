@@ -1,10 +1,13 @@
 import {getDataListTemplate, getDataListStyles} from "./templates/datalist";
+import {getSelectedListTemplate, getSelectedListStyles} from "./templates/selectedlist";
 import {IUserModelItem} from "../../interfaces/IUserModelItem";
+import {ISearchComponentNames} from "../../interfaces/ISearchComponentNames";
 export class SearchComponent extends HTMLElement {
 	public static component: HTMLElement;
 	private shadow;
-	private static templateConfig: {datalistId: string, ctrlButtons: string} = {
+	private static templateConfig: ISearchComponentNames = {
 		datalistId: "datalist",
+		selectedListId: "selectedList",
 		ctrlButtons: "controls-buttons"
 	};
 
@@ -23,7 +26,9 @@ export class SearchComponent extends HTMLElement {
 		template.innerHTML = `
 			<style>
 				${getDataListStyles(SearchComponent.templateConfig)}
+				${getSelectedListStyles(SearchComponent.templateConfig)}
 			</style>
+			${getSelectedListTemplate(SearchComponent.templateConfig)}
 			${getDataListTemplate(SearchComponent.templateConfig)}
 		`;
 
@@ -34,7 +39,7 @@ export class SearchComponent extends HTMLElement {
 		window.customElements.define("search-component", SearchComponent);
 	}
 
-	public static getTemplateConfig(): {datalistId: string, ctrlButtons: string} {
+	public static getTemplateConfig(): ISearchComponentNames {
 		return SearchComponent.templateConfig;
 	}
 
@@ -100,6 +105,53 @@ export class SearchComponent extends HTMLElement {
 		selectedListItems.forEach(el => {
 			el.classList.remove(selectionClassname);
 		});
+	}
+
+	public static addSelectedListItem(selectedList: HTMLElement | null, config: {value: string, id: string}): void {
+		if(!selectedList) {
+			return;
+		}
+
+		const li: HTMLElement = document.createElement("li");
+
+		li.appendChild(document.createTextNode(config.value));
+		li.setAttribute("data-id", config.id);
+
+		selectedList.appendChild(li);
+	}
+
+	public static removeSelectedListItem(selectedList: HTMLElement | null, id: string): void {
+		if(!selectedList) {
+			return;
+		}
+
+		selectedList.querySelector(`li[data-id="${id}"]`)?.remove();
+	}
+	public static removeAllSelectedListItem(selectedList: HTMLElement | null): void {
+		if(!selectedList) {
+			return;
+		}
+
+		selectedList.querySelectorAll("li").forEach(el => {
+			if(el.dataset.id !== "all") {
+				el.remove();
+			}
+		});
+	}
+
+	public static hideFirstAllSelectedListItem(selectedList: HTMLElement | null): void {
+		if(!selectedList) {
+			return;
+		}
+
+		selectedList.querySelector("li[data-id='all']")?.classList.add("hidden");
+	}
+	public static showFirstAllSelectedListItem(selectedList: HTMLElement | null): void {
+		if(!selectedList) {
+			return;
+		}
+
+		selectedList.querySelector("li[data-id='all']")?.classList.remove("hidden");
 	}
 }
 

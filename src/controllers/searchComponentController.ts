@@ -1,6 +1,7 @@
 import { UsersModel } from "../models/usersModel";
 import { SearchComponent } from "../components/search-component";
 import { IUserModelItem } from "../interfaces/IUserModelItem";
+import { ISearchComponentNames } from "../interfaces/ISearchComponentNames"; 
 export class SearchComponentController {
     private tagName: string;
     private usersModel: UsersModel;
@@ -54,7 +55,7 @@ export class SearchComponentController {
     }
 
     private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[]): void {
-        const templateConfig: {datalistId: string, ctrlButtons: string} = SearchComponent.getTemplateConfig();
+        const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
         const datalistNode: HTMLElement | null =
             SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__ul`);
         const datalistInputNode: HTMLInputElement | null =
@@ -65,6 +66,8 @@ export class SearchComponentController {
             SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
         const clearSelectionButton: HTMLInputElement | null =
             SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__clear-selection`);
+        const selectedListNode: HTMLInputElement | null =
+            SearchComponent.getElement(shadowRoot, `#${templateConfig.selectedListId}`);
 
         showListButton?.addEventListener("click", () => {
             const listArr: HTMLElement[] =
@@ -106,11 +109,12 @@ export class SearchComponentController {
                     target.classList.remove("selected");
 
                     this.usersModel.unselectItem(target.dataset.id);
+                    SearchComponent.removeSelectedListItem(selectedListNode, target.dataset.id);
 
                     if(!this.usersModel.isAnySelection()) {
                         clearSelectionButton?.classList.add("hidden");
+                        SearchComponent.showFirstAllSelectedListItem(selectedListNode);
                     }
-
                     return;
                 }
 
@@ -118,11 +122,15 @@ export class SearchComponentController {
                 this.usersModel.selectItem(target.dataset.id);
 
                 clearSelectionButton?.classList.remove("hidden");
+                SearchComponent.addSelectedListItem(selectedListNode, {value: target.textContent || "", id: target.dataset.id});
+                SearchComponent.hideFirstAllSelectedListItem(selectedListNode);
             }
         });
 
         clearSelectionButton?.addEventListener("click", () => {
             SearchComponent.unselectListItems(datalistNode, "selected");
+            SearchComponent.removeAllSelectedListItem(selectedListNode);
+            SearchComponent.showFirstAllSelectedListItem(selectedListNode);
 
             this.usersModel.unselectAllItems();
 
