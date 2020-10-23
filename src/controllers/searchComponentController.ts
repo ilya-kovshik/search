@@ -106,28 +106,16 @@ export class SearchComponentController {
             const target: HTMLElement = (<HTMLElement>e.target);
 
             if(target.tagName.toLowerCase() === "li" && target.dataset.id) {
-                if(target.classList.contains("selected")) {
-                    target.classList.remove("selected");
-
-                    this.usersModel.unselectItem(target.dataset.id);
-                    SearchComponent.removeSelectedListItem(selectedListNode, target.dataset.id);
-
-                    if(!this.usersModel.isAnySelection()) {
-                        clearSelectionButton?.classList.add("hidden");
-
-                        const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
-                        rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
-
+                const dataListItemClickEvent: CustomEvent = new CustomEvent("dataListItemClick", {
+                    detail: {
+                        id: target.dataset.id,
+                        modelUnselectItemClb: this.usersModel.unselectItem.bind(this.usersModel),
+                        modelIsAnySelectionClb: this.usersModel.isAnySelection.bind(this.usersModel),
+                        modelSelectItemClb: this.usersModel.selectItem.bind(this.usersModel)
                     }
-                    return;
-                }
+                });
 
-                target.classList.add("selected");
-                this.usersModel.selectItem(target.dataset.id);
-
-                clearSelectionButton?.classList.remove("hidden");
-                SearchComponent.addSelectedListItem(selectedListNode, {value: target.textContent || "", id: target.dataset.id});
-                SearchComponent.hideFirstAllSelectedListItem(selectedListNode);
+                rootNode.dispatchEvent(dataListItemClickEvent);
             }
         });
 
