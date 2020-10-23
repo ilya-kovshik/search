@@ -55,7 +55,7 @@ export class SearchComponentController {
         });
     }
 
-    private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[]): void {
+    private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[], rootNode: HTMLElement): void {
         const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
         const datalistNode: HTMLElement | null =
             SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__ul`);
@@ -129,7 +129,10 @@ export class SearchComponentController {
         });
 
         clearSelectionButton?.addEventListener("click", () => {
-            SearchComponent.unselectListItems(datalistNode, "selected");
+            const unselectListItemsEvent: Event = new Event("unselectListItems");
+
+            rootNode.dispatchEvent(unselectListItemsEvent);
+
             SearchComponent.removeAllSelectedListItem(selectedListNode);
             SearchComponent.showFirstAllSelectedListItem(selectedListNode);
 
@@ -174,7 +177,7 @@ export class SearchComponentController {
                     return;
                 }
 
-                this.addEventListeners(shadowRoot, data);
+                this.addEventListeners(shadowRoot, data, node);
             });
 
         return `<${this.tagName}></${this.tagName}>`;

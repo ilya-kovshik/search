@@ -35,6 +35,8 @@ export class SearchComponent extends HTMLElement {
 		`;
 
 		this.shadowRoot?.appendChild(template.content.cloneNode(true));
+
+		this.addEventListeners();
 	}
 
 	public static init(): void {
@@ -96,16 +98,19 @@ export class SearchComponent extends HTMLElement {
 
 		return selectedOption || null;
 	}
+	private addEventListeners(): void {
+		this.addEventListener("unselectListItems", () => {
+			const listNode: HTMLElement = this.getDatalist();
 
-	public static unselectListItems(listNode: HTMLElement | null, selectionClassname: string): void {
-		if(!listNode) {
-			return;
-		}
+			if(!listNode) {
+				return;
+			}
 
-		const selectedListItems: HTMLElement[] = [...listNode.querySelectorAll(`.${selectionClassname}`)] as HTMLElement[];
+			const selectedListItems: HTMLElement[] = [...listNode.querySelectorAll(`.selected`)] as HTMLElement[];
 
-		selectedListItems.forEach(el => {
-			el.classList.remove(selectionClassname);
+			selectedListItems.forEach(el => {
+				el.classList.remove("selected");
+			});
 		});
 	}
 
@@ -163,6 +168,13 @@ export class SearchComponent extends HTMLElement {
 		}
 
 		selectedList.querySelector("li[data-id='all']")?.classList.remove("hidden");
+	}
+
+	private getDatalist(): HTMLElement {
+		return this.shadow.querySelector(`#${SearchComponent.templateConfig.datalistId}__ul`) as HTMLElement;
+	}
+	private getSelectedDatalist(): HTMLElement {
+		return this.shadow.querySelector(`#${SearchComponent.templateConfig.selectedListId}`) as HTMLElement;
 	}
 }
 
