@@ -2,6 +2,7 @@ import {getDataListTemplate, getDataListStyles} from "./templates/datalist";
 import {getSelectedListTemplate, getSelectedListStyles} from "./templates/selectedlist";
 import {IUserModelItem} from "../../interfaces/IUserModelItem";
 import {ISearchComponentNames} from "../../interfaces/ISearchComponentNames";
+import {icons} from "../../icons";
 export class SearchComponent extends HTMLElement {
 	public static component: HTMLElement;
 	private shadow;
@@ -25,6 +26,7 @@ export class SearchComponent extends HTMLElement {
 
 		template.innerHTML = `
 			<style>
+				@import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
 				${getDataListStyles(SearchComponent.templateConfig)}
 				${getSelectedListStyles(SearchComponent.templateConfig)}
 			</style>
@@ -114,7 +116,16 @@ export class SearchComponent extends HTMLElement {
 
 		const li: HTMLElement = document.createElement("li");
 
-		li.appendChild(document.createTextNode(config.value));
+		const textSpan: HTMLElement = document.createElement("span");
+		const closeSpan: HTMLElement = document.createElement("span");
+
+		textSpan.appendChild(document.createTextNode(config.value));
+
+		closeSpan.classList.add(...icons.close.split(" "));
+
+		li.appendChild(textSpan);
+		li.appendChild(closeSpan);
+
 		li.setAttribute("data-id", config.id);
 
 		selectedList.appendChild(li);

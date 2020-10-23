@@ -2,7 +2,9 @@ import {ISearchComponentNames} from "../../../interfaces/ISearchComponentNames";
 
 const getSelectedListTemplate: (config: ISearchComponentNames) => string = (config): string => `
     <ul id="${config.selectedListId}">
-        <li data-id="all">All</li>
+        <li data-id="all">
+            <span>All</span>
+        </li>
     </ul>
 `;
 
@@ -15,8 +17,11 @@ const getSelectedListStyles: (config: ISearchComponentNames) => string = (config
     }
 
     #${config.selectedListId} li {
+        display: grid;
+        justify-content: space-between;
+        grid-auto-flow: column;
         border: 1px solid;
-        padding: 5px;
+        padding: 5px 10px;
         border-radius: 5px;
         margin: 10px;
     }

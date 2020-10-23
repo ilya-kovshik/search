@@ -1,7 +1,8 @@
 import { UsersModel } from "../models/usersModel";
 import { SearchComponent } from "../components/search-component";
 import { IUserModelItem } from "../interfaces/IUserModelItem";
-import { ISearchComponentNames } from "../interfaces/ISearchComponentNames"; 
+import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
+import { icons } from "../icons";
 export class SearchComponentController {
     private tagName: string;
     private usersModel: UsersModel;
@@ -135,6 +136,30 @@ export class SearchComponentController {
             this.usersModel.unselectAllItems();
 
             clearSelectionButton.classList.add("hidden");
+        });
+
+        selectedListNode?.addEventListener("click", (e: Event) => {
+            const target: HTMLElement = e.target as HTMLElement;
+            const parent: HTMLElement | null = target.parentElement;
+            const closeIconName: string | undefined = icons.close.split(" ").pop();
+
+            if(closeIconName && parent && target.classList.contains(closeIconName)) {
+                const id: string | undefined = parent.dataset.id;
+
+                if(id) {
+                    const selectedItem = datalistNode?.querySelector(`li[data-id="${id}"]`);
+
+                    selectedItem?.classList.remove("selected");
+                    this.usersModel.unselectItem(id);
+
+                    parent.remove();
+
+                    if(!this.usersModel.isAnySelection()) {
+                        SearchComponent.showFirstAllSelectedListItem(selectedListNode);
+                        clearSelectionButton?.classList.add("hidden");
+                    }
+                }
+            }
         });
     }
 
