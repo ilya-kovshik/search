@@ -159,6 +159,28 @@ export class SearchComponent extends HTMLElement {
 			this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
 			this.getClearSelectionButton().classList.add("hidden");
 		});
+
+		this.addEventListener("selectedListClick", (e: any) => {
+			const target: HTMLElement = e.detail.target as HTMLElement;
+            const parent: HTMLElement | null = target.parentElement;
+            const closeIconName: string | undefined = icons.close.split(" ").pop();
+
+            if(closeIconName && parent && target.classList.contains(closeIconName)) {
+                const id: string | undefined = parent.dataset.id;
+
+                if(id) {
+					this.getSelectedListItem(id).remove();
+					this.getDataListItem(id)?.classList.remove("selected");
+
+					e.detail.unselectItem(id);
+
+                    if(!e.detail.isAnySelection()) {
+						this.getClearSelectionButton().classList.add("hidden");
+						this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
+                    }
+                }
+            }
+		});
 	}
 
 	private getDataList(): HTMLElement {

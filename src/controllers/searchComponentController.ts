@@ -2,7 +2,6 @@ import { UsersModel } from "../models/usersModel";
 import { SearchComponent } from "../components/search-component";
 import { IUserModelItem } from "../interfaces/IUserModelItem";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
-import { icons } from "../icons";
 export class SearchComponentController {
     private tagName: string;
     private usersModel: UsersModel;
@@ -60,18 +59,18 @@ export class SearchComponentController {
         });
 
         searchInput?.addEventListener("input", (): void => {
-            const searchInputEvent: CustomEvent = new CustomEvent("searchInput", {
+            const event: CustomEvent = new CustomEvent("searchInput", {
                 detail: {
                     data,
                     isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
                 }
             });
 
-            rootNode.dispatchEvent(searchInputEvent);
+            rootNode.dispatchEvent(event);
         });
 
         dataList?.addEventListener("click", (e: Event) => {
-            const dataListItemClickEvent: CustomEvent = new CustomEvent("dataListClick", {
+            const event: CustomEvent = new CustomEvent("dataListClick", {
                 detail: {
                     id: (e.target as HTMLElement).dataset.id,
                     target: e.target,
@@ -81,7 +80,7 @@ export class SearchComponentController {
                 }
             });
 
-            rootNode.dispatchEvent(dataListItemClickEvent);
+            rootNode.dispatchEvent(event);
         });
 
         clearSelectionButton?.addEventListener("click", () => {
@@ -91,39 +90,15 @@ export class SearchComponentController {
         });
 
         selectedList?.addEventListener("click", (e: Event) => {
-            const target: HTMLElement = e.target as HTMLElement;
-            const parent: HTMLElement | null = target.parentElement;
-            const closeIconName: string | undefined = icons.close.split(" ").pop();
-
-            if(closeIconName && parent && target.classList.contains(closeIconName)) {
-                const id: string | undefined = parent.dataset.id;
-
-                if(id) {
-                    const removeSelectedListItemEvent: CustomEvent = new CustomEvent("removeSelectedListItem", {
-                        detail: {
-                            id: parent.dataset.id
-                        }
-                    });
-                    const unselectDataListItemEvent: CustomEvent = new CustomEvent("unselectDataListItem", {
-                        detail: {
-                            id: parent.dataset.id
-                        }
-                    });
-
-                    rootNode.dispatchEvent(removeSelectedListItemEvent);
-                    rootNode.dispatchEvent(unselectDataListItemEvent);
-
-                    this.usersModel.unselectItem(id);
-
-                    if(!this.usersModel.isAnySelection()) {
-                        const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
-                        const hideClearSelectionButtonEvent: Event = new Event("hideClearSelectionButton");
-
-                        rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
-                        rootNode.dispatchEvent(hideClearSelectionButtonEvent);
-                    }
+            const event: Event = new CustomEvent("selectedListClick", {
+                detail: {
+                    target: e.target,
+                    unselectItem: (id: string) => this.usersModel.unselectItem.call(this.usersModel, id),
+                    isAnySelection: this.usersModel.isAnySelection.bind(this.usersModel)
                 }
-            }
+            });
+
+            rootNode.dispatchEvent(event);
         });
     }
 
