@@ -4,7 +4,6 @@ import {IUserModelItem} from "../../interfaces/IUserModelItem";
 import {ISearchComponentNames} from "../../interfaces/ISearchComponentNames";
 import {icons} from "../../icons";
 export class SearchComponent extends HTMLElement {
-	public static component: HTMLElement;
 	private shadow;
 	private static templateConfig: ISearchComponentNames = {
 		datalistId: "datalist",
@@ -112,6 +111,24 @@ export class SearchComponent extends HTMLElement {
 				el.classList.remove("selected");
 			});
 		});
+
+		this.addEventListener("clearSelectedList", () => {
+			const selectedList: HTMLElement = this.getSelectedList();
+
+			selectedList.querySelectorAll("li").forEach(el => {
+				if(el.dataset.id !== "all") {
+					el.remove();
+				}
+			});
+		});
+
+		this.addEventListener("showSelectedListDefaultItem", () => {
+			this.getSelectedList().querySelector("li[data-id='all']")?.classList.remove("hidden");
+		});
+
+		this.addEventListener("hideClearSelectionButton", () => {
+			this.getClearSelectionButton().classList.remove("hidden");
+		});
 	}
 
 	public static addSelectedListItem(selectedList: HTMLElement | null, config: {value: string, id: string}): void {
@@ -143,18 +160,6 @@ export class SearchComponent extends HTMLElement {
 
 		selectedList.querySelector(`li[data-id="${id}"]`)?.remove();
 	}
-	public static removeAllSelectedListItem(selectedList: HTMLElement | null): void {
-		if(!selectedList) {
-			return;
-		}
-
-		selectedList.querySelectorAll("li").forEach(el => {
-			if(el.dataset.id !== "all") {
-				el.remove();
-			}
-		});
-	}
-
 	public static hideFirstAllSelectedListItem(selectedList: HTMLElement | null): void {
 		if(!selectedList) {
 			return;
@@ -162,19 +167,15 @@ export class SearchComponent extends HTMLElement {
 
 		selectedList.querySelector("li[data-id='all']")?.classList.add("hidden");
 	}
-	public static showFirstAllSelectedListItem(selectedList: HTMLElement | null): void {
-		if(!selectedList) {
-			return;
-		}
-
-		selectedList.querySelector("li[data-id='all']")?.classList.remove("hidden");
-	}
 
 	private getDatalist(): HTMLElement {
 		return this.shadow.querySelector(`#${SearchComponent.templateConfig.datalistId}__ul`) as HTMLElement;
 	}
-	private getSelectedDatalist(): HTMLElement {
+	private getSelectedList(): HTMLElement {
 		return this.shadow.querySelector(`#${SearchComponent.templateConfig.selectedListId}`) as HTMLElement;
+	}
+	private getClearSelectionButton(): HTMLElement {
+		return this.shadow.querySelector(`.${SearchComponent.templateConfig.ctrlButtons}__clear-selection`) as HTMLElement;
 	}
 }
 

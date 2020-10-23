@@ -114,7 +114,10 @@ export class SearchComponentController {
 
                     if(!this.usersModel.isAnySelection()) {
                         clearSelectionButton?.classList.add("hidden");
-                        SearchComponent.showFirstAllSelectedListItem(selectedListNode);
+
+                        const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
+                        rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
+
                     }
                     return;
                 }
@@ -130,15 +133,16 @@ export class SearchComponentController {
 
         clearSelectionButton?.addEventListener("click", () => {
             const unselectListItemsEvent: Event = new Event("unselectListItems");
+            const clearSelectedListEvent: Event = new Event("clearSelectedList");
+            const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
+            const hideClearSelectionButtonEvent: Event = new Event("hideClearSelectionButton");
 
             rootNode.dispatchEvent(unselectListItemsEvent);
-
-            SearchComponent.removeAllSelectedListItem(selectedListNode);
-            SearchComponent.showFirstAllSelectedListItem(selectedListNode);
+            rootNode.dispatchEvent(clearSelectedListEvent);
+            rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
+            rootNode.dispatchEvent(hideClearSelectionButtonEvent);
 
             this.usersModel.unselectAllItems();
-
-            clearSelectionButton.classList.add("hidden");
         });
 
         selectedListNode?.addEventListener("click", (e: Event) => {
@@ -158,7 +162,9 @@ export class SearchComponentController {
                     parent.remove();
 
                     if(!this.usersModel.isAnySelection()) {
-                        SearchComponent.showFirstAllSelectedListItem(selectedListNode);
+                        const showSelectedListDefaultItemEvent: Event = new Event("showSelectedListDefaultItem");
+
+                        rootNode.dispatchEvent(showSelectedListDefaultItemEvent);
                         clearSelectionButton?.classList.add("hidden");
                     }
                 }
