@@ -50,7 +50,7 @@ export class SearchComponent extends HTMLElement {
 		return node.querySelector(selector) || null;
 	}
 
-	public static getDatalistItems(
+	private getDatalistItems(
 		data: IUserModelItem[],
 		isItemSelectedClbck: (id: string) => boolean,
 		filter = ""
@@ -72,30 +72,6 @@ export class SearchComponent extends HTMLElement {
 			});
 
 		return nodesArr;
-	}
-
-	public static appendElements(node: HTMLElement | null, elements: HTMLElement[], update?: boolean): void {
-		if(!node) {
-			return;
-		}
-
-		if(!update) {
-			node.innerHTML = "";
-		}
-
-		node.append(...elements);
-	}
-
-	public static getSelectedOption(datalist: HTMLElement | null, input: HTMLInputElement | null): HTMLElement | null {
-		if(!datalist || !input) {
-			return null;
-		}
-
-		const optionsArr: HTMLElement[] = [...datalist.getElementsByTagName("option")];
-		const selectedOption: HTMLElement | undefined =
-			optionsArr.find(el => el.getAttribute("value") === input.value);
-
-		return selectedOption || null;
 	}
 	private addEventListeners(): void {
 		this.addEventListener("unselectListItems", () => {
@@ -127,7 +103,7 @@ export class SearchComponent extends HTMLElement {
 		});
 
 		this.addEventListener("hideClearSelectionButton", () => {
-			this.getClearSelectionButton().classList.remove("hidden");
+			this.getClearSelectionButton().classList.add("hidden");
 		});
 
 		this.addEventListener("removeSelectedListItem", (e: any) => {
@@ -168,43 +144,39 @@ export class SearchComponent extends HTMLElement {
 
 			this.getSelectedList().querySelector("li[data-id='all']")?.classList.add("hidden");
 		});
-	}
 
-	public static addSelectedListItem(selectedList: HTMLElement | null, config: {value: string, id: string}): void {
-		if(!selectedList) {
-			return;
-		}
+		this.addEventListener("searchInput", (e: any) => {
+			const datalistInput: HTMLInputElement = this.getDataListInput();
+			const dataList: HTMLElement = this.getDataList();
+			const value: string = datalistInput.value;
+			const data: IUserModelItem[] = e.detail.data;
 
-		const li: HTMLElement = document.createElement("li");
+            const listArr: HTMLElement[] =
+				this.getDatalistItems(data, e.detail.isItemSelectedCalbck, value);
 
-		const textSpan: HTMLElement = document.createElement("span");
-		const closeSpan: HTMLElement = document.createElement("span");
 
-		textSpan.appendChild(document.createTextNode(config.value));
+			this.clearDataList();
+			dataList.append(...listArr);
+			datalistInput.parentElement?.classList.add("active");
 
-		closeSpan.classList.add(...icons.close.split(" "));
+			this.getHideButton().classList.remove("hidden");
+			this.getShowButton().classList.add("hidden");
+		});
 
-		li.appendChild(textSpan);
-		li.appendChild(closeSpan);
+		this.addEventListener("showListButtonClick", (e: any) => {
+			const datalistInput: HTMLInputElement = this.getDataListInput();
+			const data: IUserModelItem[] = e.detail.data;
+			const dataList: HTMLElement = this.getDataList();
+            const listArr: HTMLElement[] =
+				this.getDatalistItems(data, e.detail.isItemSelectedCalbck, datalistInput.value);
 
-		li.setAttribute("data-id", config.id);
+			this.clearDataList();
+			dataList.append(...listArr);
 
-		selectedList.appendChild(li);
-	}
+			datalistInput.parentElement?.classList.add("active");
 
-	public static removeSelectedListItem(selectedList: HTMLElement | null, id: string): void {
-		if(!selectedList) {
-			return;
-		}
-
-		selectedList.querySelector(`li[data-id="${id}"]`)?.remove();
-	}
-	public static hideFirstAllSelectedListItem(selectedList: HTMLElement | null): void {
-		if(!selectedList) {
-			return;
-		}
-
-		selectedList.querySelector("li[data-id='all']")?.classList.add("hidden");
+			this.toggleControllsButtonsVisibility();
+		});
 	}
 
 	private getDataList(): HTMLElement {
@@ -213,8 +185,8 @@ export class SearchComponent extends HTMLElement {
 	private getDataListItem(id: string): HTMLElement {
 		return this.getDataList().querySelector(`li[data-id="${id}"]`) as HTMLElement;
 	}
-	private unselectDataListItem(id: string): void {
-
+	private getDataListInput(): HTMLInputElement {
+		return this.shadow.querySelector(`#${SearchComponent.templateConfig.datalistId}__input`) as HTMLInputElement;
 	}
 	private getSelectedList(): HTMLElement {
 		return this.shadow.querySelector(`#${SearchComponent.templateConfig.selectedListId}`) as HTMLElement;
@@ -243,6 +215,19 @@ export class SearchComponent extends HTMLElement {
 		li.setAttribute("data-id", config.id);
 
 		selectedList.appendChild(li);
+	}
+	private clearDataList(): void {
+		this.getDataList().innerHTML = "";
+	}
+	private getShowButton(): HTMLElement {
+		return this.shadow.querySelector(`.${SearchComponent.templateConfig.ctrlButtons}__show`) as HTMLElement;
+	}
+	private getHideButton(): HTMLElement {
+		return this.shadow.querySelector(`.${SearchComponent.templateConfig.ctrlButtons}__hide`) as HTMLElement;
+	}
+	private toggleControllsButtonsVisibility(): void {
+		this.getShowButton()?.classList.toggle("hidden");
+        this.getHideButton()?.classList.toggle("hidden");
 	}
 }
 

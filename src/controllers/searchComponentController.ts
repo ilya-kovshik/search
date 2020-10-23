@@ -12,27 +12,6 @@ export class SearchComponentController {
         this.usersModel = usersModel;
     }
 
-    private toggleControllsButtonsVisibility(
-        showButton: HTMLElement | null,
-        hideButton: HTMLElement | null,
-        config?: {hideBtnVissibile: boolean, showBtnVissibile: boolean}
-    ): void {
-        if(config) {
-            config.hideBtnVissibile ?
-                hideButton?.classList.remove("hidden"):
-                hideButton?.classList.add("hidden");
-
-            config.showBtnVissibile ?
-                showButton?.classList.remove("hidden"):
-                showButton?.classList.add("hidden");
-
-            return;
-        }
-
-        showButton?.classList.toggle("hidden");
-        hideButton?.classList.toggle("hidden");
-    }
-
     private observeNodes(): Promise<HTMLElement> {
         return new Promise((res) => {
             const observerCallback = (mutationsList: any) => {
@@ -71,35 +50,32 @@ export class SearchComponentController {
             SearchComponent.getElement(shadowRoot, `#${templateConfig.selectedListId}`);
 
         showListButton?.addEventListener("click", () => {
-            const listArr: HTMLElement[] =
-                SearchComponent.getDatalistItems(data, this.usersModel.isItemSelected.bind(this.usersModel), datalistInputNode?.value);
+            const event: CustomEvent = new CustomEvent("showListButtonClick", {
+                detail: {
+                    data,
+                    isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
+                }
+            });
 
-            SearchComponent.appendElements(datalistNode, listArr);
-            datalistInputNode?.parentElement?.classList.add("active");
-
-            this.toggleControllsButtonsVisibility(showListButton, hideListButton);
+            rootNode.dispatchEvent(event);
         });
 
         hideListButton?.addEventListener("click", () => {
-            datalistInputNode?.parentElement?.classList.remove("active");
+            const hideButtonClickEvent: Event = new Event("hideButtonClick");
 
-            this.toggleControllsButtonsVisibility(showListButton, hideListButton);
+            rootNode.dispatchEvent(hideButtonClickEvent);
         });
 
 
         datalistInputNode?.addEventListener("input", (): void => {
-            const value: string = datalistInputNode.value;
-            const listArr: HTMLElement[] =
-                SearchComponent.getDatalistItems(data, this.usersModel.isItemSelected.bind(this.usersModel), value);
+            const searchInputEvent: CustomEvent = new CustomEvent("searchInput", {
+                detail: {
+                    data,
+                    isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
+                }
+            });
 
-            SearchComponent.appendElements(datalistNode, listArr);
-            datalistInputNode.parentElement?.classList.add("active");
-
-            this.toggleControllsButtonsVisibility(
-                showListButton,
-                hideListButton,
-                {hideBtnVissibile: true, showBtnVissibile: false}
-            );
+            rootNode.dispatchEvent(searchInputEvent);
         });
 
         datalistNode?.addEventListener("click", (e: Event) => {
