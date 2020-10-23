@@ -46,10 +46,6 @@ export class SearchComponent extends HTMLElement {
 		return SearchComponent.templateConfig;
 	}
 
-	public static getElement(node: HTMLElement | ShadowRoot, selector: string): (HTMLElement | null) & (HTMLInputElement | null) {
-		return node.querySelector(selector) || null;
-	}
-
 	private getDatalistItems(
 		data: IUserModelItem[],
 		isItemSelectedClbck: (id: string) => boolean,
@@ -174,6 +170,12 @@ export class SearchComponent extends HTMLElement {
 			dataList.append(...listArr);
 
 			datalistInput.parentElement?.classList.add("active");
+
+			this.toggleControllsButtonsVisibility();
+		});
+
+		this.addEventListener("hideButtonClick", () => {
+			this.getDataListInput().parentElement?.classList.remove("active");
 
 			this.toggleControllsButtonsVisibility();
 		});

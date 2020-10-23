@@ -36,18 +36,13 @@ export class SearchComponentController {
 
     private addEventListeners(shadowRoot: ShadowRoot, data: IUserModelItem[], rootNode: HTMLElement): void {
         const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
-        const datalistNode: HTMLElement | null =
-            SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__ul`);
-        const datalistInputNode: HTMLInputElement | null =
-            SearchComponent.getElement(shadowRoot, `#${templateConfig.datalistId}__input`);
-        const showListButton: HTMLInputElement | null =
-            SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__show`);
-        const hideListButton: HTMLInputElement | null =
-            SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__hide`);
-        const clearSelectionButton: HTMLInputElement | null =
-            SearchComponent.getElement(shadowRoot, `.${templateConfig.ctrlButtons}__clear-selection`);
-        const selectedListNode: HTMLInputElement | null =
-            SearchComponent.getElement(shadowRoot, `#${templateConfig.selectedListId}`);
+
+        const datalistNode: HTMLElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__ul`);
+        const datalistInputNode: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__input`);
+        const showListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__show`);
+        const hideListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__hide`);
+        const clearSelectionButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__clear-selection`);
+        const selectedListNode: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.selectedListId}`);
 
         showListButton?.addEventListener("click", () => {
             const event: CustomEvent = new CustomEvent("showListButtonClick", {
