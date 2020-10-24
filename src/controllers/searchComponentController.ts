@@ -11,13 +11,16 @@ export class SearchComponentController {
         this.usersModel = usersModel;
     }
 
-    private observeNodes(): Promise<HTMLElement> {
+    private observeNodes(componentID: string): Promise<HTMLElement> {
         return new Promise((res) => {
             const observerCallback = (mutationsList: any) => {
                 for(const mutation of mutationsList) {
                     if (mutation.type === "childList" && mutation.addedNodes.length) {
                         const node =
-                            [...mutation.addedNodes].find(el => el.tagName.toLowerCase() === this.tagName);
+                            [...mutation.addedNodes].find(
+                                el => el.tagName.toLowerCase() === this.tagName &&
+                                el.getAttribute("id") === componentID
+                            );
 
                         if(node) {
                             observer.disconnect();
@@ -154,15 +157,18 @@ export class SearchComponentController {
         });
     }
 
-    public async initSearchComponent(): Promise<string> {
-        SearchComponent.init();
+    public initSearchComponent(componentID: string): Promise<string> {
+        return new Promise((res) => {
+            SearchComponent.init();
 
-        Promise
-            .all([this.usersModel.getUsers(), this.observeNodes()])
-            .then(([data, node]) => {
+            Promise.all([
+                this.observeNodes(componentID),
+                this.usersModel.getUsers()
+            ]).then(([node, data]) => {
                 this.addEventListeners(node, data);
             });
 
-        return `<${this.tagName}></${this.tagName}>`;
+            res(`<${this.tagName} id="${componentID}"></${this.tagName}>`);
+        });
     }
 }

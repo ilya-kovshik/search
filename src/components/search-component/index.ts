@@ -4,6 +4,7 @@ import {IUserModelItem} from "../../interfaces/IUserModelItem";
 import {ISearchComponentNames} from "../../interfaces/ISearchComponentNames";
 import {icons} from "../../icons";
 export class SearchComponent extends HTMLElement {
+	private static isComponentInit = false;
 	private shadow;
 	private static templateConfig: ISearchComponentNames = {
 		datalistId: "datalist",
@@ -39,7 +40,11 @@ export class SearchComponent extends HTMLElement {
 	}
 
 	public static init(): void {
-		window.customElements.define("search-component", SearchComponent);
+		if(!SearchComponent.isComponentInit) {
+			window.customElements.define("search-component", SearchComponent);
+
+			SearchComponent.isComponentInit = true;
+		}
 	}
 
 	public static getTemplateConfig(): ISearchComponentNames {
