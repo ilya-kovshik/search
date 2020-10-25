@@ -3,7 +3,7 @@ const getDataListTemplate = (config: {datalistId: string, ctrlButtons: string}):
             <div id="${config.datalistId}">
                 <input id="${config.datalistId}__input" type="text">
                 <i id="${config.datalistId}__icon"></i>
-                <ul id="${config.datalistId}__ul"></ul>
+                <ul id="${config.datalistId}__ul" slot="dropdown"></ul>
             </div>
             <div class="${config.ctrlButtons}">
                 <span class="${config.ctrlButtons}__show fas fa-angle-down"></span>

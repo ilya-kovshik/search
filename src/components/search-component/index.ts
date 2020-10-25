@@ -186,6 +186,27 @@ export class SearchComponent extends HTMLElement {
                 }
             }
 		});
+
+		this.addEventListener("windowClickEvent", () => {
+			window.addEventListener("click", (e: Event) => {
+				const target: HTMLElement = e.composedPath()[0] as HTMLElement;
+
+				if(
+					target !== this.getDataList() &&
+					target !== this.getShowButton() &&
+					target.parentNode !== this.getDataList() &&
+					target !== this.getClearSelectionButton() &&
+					target !== this.getDataListInput() &&
+					target !== this.getSelectedList() &&
+					target.parentNode !== this.getSelectedList() &&
+					!target.classList.contains("fa-times")
+				) {
+					this.shadow.getElementById(SearchComponent.templateConfig.datalistId)?.classList.remove("active");
+					this.getShowButton().classList.remove("hidden");
+					this.getHideButton().classList.add("hidden");
+				}
+			});
+		});
 	}
 
 	private getDataList(): HTMLElement {
@@ -238,7 +259,7 @@ export class SearchComponent extends HTMLElement {
 		this.getShowButton()?.classList.toggle("hidden");
         this.getHideButton()?.classList.toggle("hidden");
 	}
-	private unselectDataListItems() {
+	private unselectDataListItems(): void {
 		const listNode: HTMLElement = this.getDataList();
 
 		if(!listNode) {
@@ -251,7 +272,7 @@ export class SearchComponent extends HTMLElement {
 			el.classList.remove("selected");
 		});
 	}
-	private clearSelectList() {
+	private clearSelectList(): void {
 		const selectedList: HTMLElement = this.getSelectedList();
 
 		selectedList.querySelectorAll("li").forEach(el => {

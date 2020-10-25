@@ -42,6 +42,7 @@ export class SearchComponentController {
         this.addSelectedListEvents(shadowRoot, templateConfig, rootNode);
         this.addSearchInputEvents(shadowRoot, templateConfig, data, rootNode);
         this.addClearSelectionButtonEvents(shadowRoot, templateConfig, rootNode);
+        this.addWindowEvents(rootNode);
     }
 
     private addShowListButtonEvent(
@@ -151,6 +152,10 @@ export class SearchComponentController {
 
             this.usersModel.unselectAllItems();
         });
+    }
+
+    private addWindowEvents(rootNode: HTMLElement): void {
+        rootNode.dispatchEvent(new Event("windowClickEvent"));
     }
 
     public initSearchComponent(componentID: string): Promise<string> {
