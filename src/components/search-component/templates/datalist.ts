@@ -6,9 +6,9 @@ const getDataListTemplate = (config: {datalistId: string, ctrlButtons: string}):
                 <ul id="${config.datalistId}__ul"></ul>
             </div>
             <div class="${config.ctrlButtons}">
-                <input type="button" class="${config.ctrlButtons}__show" value="o" />
-                <input type="button" class="${config.ctrlButtons}__hide hidden" value="x"/>
-                <input type="button" class="${config.ctrlButtons}__clear-selection hidden" value="Clear selection"/>
+                <span class="${config.ctrlButtons}__show fas fa-angle-down"></span>
+                <span class="${config.ctrlButtons}__hide hidden fas fa-times"></span>
+                <button class="${config.ctrlButtons}__clear-selection hidden">Clear selection</button>
             </div>
         </div>
     `
@@ -36,7 +36,7 @@ const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): s
     }
 
     #${config.datalistId}__input:focus {
-        border: 1px solid #AA0000;
+        border: 1px solid #3288C1;
         outline: 0;
     }
 
@@ -101,8 +101,37 @@ const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): s
         justify-content: left;
     }
 
-    .${config.ctrlButtons} input[type="button"].hidden {
+    .${config.ctrlButtons} span.hidden,
+    .${config.ctrlButtons} button.hidden {
         display: none;
+    }
+
+    .${config.ctrlButtons} span {
+        padding: 4px;
+        position: relative;
+        border-radius: 50%;
+        width: 15px;
+        height: 15px;
+        cursor: pointer;
+    }
+    .${config.ctrlButtons} button {
+        padding: 10px;
+        border: 2px solid #007DAF;
+        cursor: pointer;
+        background: #CCE4F7;
+        color: #3995D1;
+        font-weight: 700;
+        border-radius: 5px;
+    }
+
+    .${config.ctrlButtons} span:before {
+        left: 6px;
+        top: 3px;
+        position: absolute;
+    }
+
+    .${config.ctrlButtons} span:hover {
+        background: #9E9E9E;
     }
 `);
 
