@@ -16,11 +16,7 @@ export class SearchComponentController {
             const observerCallback = (mutationsList: any) => {
                 for(const mutation of mutationsList) {
                     if (mutation.type === "childList" && mutation.addedNodes.length) {
-                        const node =
-                            [...mutation.addedNodes].find(
-                                el => el.tagName.toLowerCase() === this.tagName &&
-                                el.getAttribute("id") === componentID
-                            );
+                        const node: HTMLElement | null = document.getElementById(componentID);
 
                         if(node) {
                             observer.disconnect();
