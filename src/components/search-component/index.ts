@@ -207,6 +207,16 @@ export class SearchComponent extends HTMLElement {
 				}
 			});
 		});
+
+		this.addEventListener("windowKeyDownEvent", () => {
+			window.addEventListener("keydown", (e) => {
+				if(e.code.toLowerCase() === "escape") {
+					this.shadow.getElementById(SearchComponent.templateConfig.datalistId)?.classList.remove("active");
+					this.getShowButton().classList.remove("hidden");
+					this.getHideButton().classList.add("hidden");
+				}
+			});
+		});
 	}
 
 	private getDataList(): HTMLElement {

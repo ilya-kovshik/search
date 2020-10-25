@@ -156,6 +156,7 @@ export class SearchComponentController {
 
     private addWindowEvents(rootNode: HTMLElement): void {
         rootNode.dispatchEvent(new Event("windowClickEvent"));
+        rootNode.dispatchEvent(new Event("windowKeyDownEvent"));
     }
 
     public initSearchComponent(componentID: string): Promise<string> {
