@@ -56,7 +56,7 @@ export class SearchComponentController {
         showListButton?.addEventListener("click", () => {
             const event: CustomEvent = new CustomEvent("showListButtonClick", {
                 detail: {
-                    data,
+                    getData: this.usersModel.getUsers.bind(this.usersModel),
                     isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
                 }
             });
@@ -130,7 +130,7 @@ export class SearchComponentController {
         searchInput?.addEventListener("input", (): void => {
             const event: CustomEvent = new CustomEvent("searchInput", {
                 detail: {
-                    data,
+                    getData: this.usersModel.getUsers.bind(this.usersModel),
                     isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
                 }
             });

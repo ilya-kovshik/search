@@ -118,11 +118,11 @@ export class SearchComponent extends HTMLElement {
             }
 		});
 
-		this.addEventListener("searchInput", (e: any) => {
+		this.addEventListener("searchInput", async (e: any) => {
 			const datalistInput: HTMLInputElement = this.getDataListInput();
 			const dataList: HTMLElement = this.getDataList();
 			const value: string = datalistInput.value;
-			const data: IUserModelItem[] = e.detail.data;
+			const data: IUserModelItem[] = await e.detail.getData();
 
             const listArr: HTMLElement[] =
 				this.getDatalistItems(data, e.detail.isItemSelectedCalbck, value);
@@ -136,9 +136,9 @@ export class SearchComponent extends HTMLElement {
 			this.getShowButton().classList.add("hidden");
 		});
 
-		this.addEventListener("showListButtonClick", (e: any) => {
+		this.addEventListener("showListButtonClick", async (e: any) => {
 			const datalistInput: HTMLInputElement = this.getDataListInput();
-			const data: IUserModelItem[] = e.detail.data;
+			const data: IUserModelItem[] = await e.detail.getData();
 			const dataList: HTMLElement = this.getDataList();
             const listArr: HTMLElement[] =
 				this.getDatalistItems(data, e.detail.isItemSelectedCalbck, datalistInput.value);
