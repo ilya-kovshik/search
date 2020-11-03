@@ -32,15 +32,15 @@ export class SearchComponentController {
         });
     }
 
-    private addEventListeners(rootNode: HTMLElement, data: IUserModelItem[]): void {
+    private addEventListeners(rootNode: HTMLElement): void {
         const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
         const shadowRoot: ShadowRoot = rootNode.shadowRoot as ShadowRoot;
 
-        this.addShowListButtonEvent(shadowRoot, templateConfig, data, rootNode);
+        this.addShowListButtonEvent(shadowRoot, templateConfig, rootNode);
         this.addHideListButtonEvents(shadowRoot, templateConfig, rootNode);
         this.addDataListEvents(shadowRoot, templateConfig, rootNode);
         this.addSelectedListEvents(shadowRoot, templateConfig, rootNode);
-        this.addSearchInputEvents(shadowRoot, templateConfig, data, rootNode);
+        this.addSearchInputEvents(shadowRoot, templateConfig, rootNode);
         this.addClearSelectionButtonEvents(shadowRoot, templateConfig, rootNode);
         this.addWindowEvents(rootNode);
     }
@@ -48,15 +48,15 @@ export class SearchComponentController {
     private addShowListButtonEvent(
         shadowRoot: ShadowRoot,
         templateConfig: ISearchComponentNames,
-        data: IUserModelItem[],
         rootNode: HTMLElement
     ): void {
         const showListButton: HTMLInputElement | null = shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__show`);
 
-        showListButton?.addEventListener("click", () => {
+        showListButton?.addEventListener("click", async () => {
+            const data: IUserModelItem[] = await this.usersModel.getUsers();
             const event: CustomEvent = new CustomEvent("showListButtonClick", {
                 detail: {
-                    getData: this.usersModel.getUsers.bind(this.usersModel),
+                    data,
                     isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
                 }
             });
@@ -122,15 +122,15 @@ export class SearchComponentController {
     private addSearchInputEvents(
         shadowRoot: ShadowRoot,
         templateConfig: ISearchComponentNames,
-        data: IUserModelItem[],
         rootNode: HTMLElement
     ): void {
         const searchInput: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.datalistId}__input`);
 
-        searchInput?.addEventListener("input", (): void => {
+        searchInput?.addEventListener("input", async (): Promise<void> => {
+            const data: IUserModelItem[] = await this.usersModel.getUsers();
             const event: CustomEvent = new CustomEvent("searchInput", {
                 detail: {
-                    getData: this.usersModel.getUsers.bind(this.usersModel),
+                    data,
                     isItemSelectedCalbck: this.usersModel.isItemSelected.bind(this.usersModel)
                 }
             });
@@ -144,7 +144,7 @@ export class SearchComponentController {
         templateConfig: ISearchComponentNames,
         rootNode: HTMLElement
     ): void {
-        const clearSelectionButton: HTMLInputElement | null = 
+        const clearSelectionButton: HTMLInputElement | null =
             shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__clear-selection`);
 
         clearSelectionButton?.addEventListener("click", () => {
@@ -163,11 +163,9 @@ export class SearchComponentController {
         return new Promise((res) => {
             SearchComponent.init();
 
-            Promise.all([
-                this.observeNodes(componentID),
-                this.usersModel.getUsers()
-            ]).then(([node, data]) => {
-                this.addEventListeners(node, data);
+            this.observeNodes(componentID).then((node: HTMLElement) => {
+                this.addEventListeners(node);
+
             });
 
             res(`<${this.tagName} id="${componentID}"></${this.tagName}>`);
