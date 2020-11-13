@@ -1,4 +1,3 @@
-import { UsersModel } from "../models/usersModel";
 import { SearchInputComponent } from "../components/search-input-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
 import { IUserModelItem } from "../interfaces/IUserModelItem";

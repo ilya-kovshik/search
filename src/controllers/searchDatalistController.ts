@@ -1,7 +1,6 @@
 import { SearchDatalistComponent } from "../components/search-datalist-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
 import { IUsersModel } from "../interfaces/IUsersModel";
-import { UsersModel } from "../models/usersModel";
 
 export class SearchDatalistController {
     private tagName: string;
