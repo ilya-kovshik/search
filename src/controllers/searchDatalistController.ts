@@ -1,19 +1,20 @@
 import { SearchDatalistComponent } from "../components/search-datalist-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
+import { IUsersModel } from "../interfaces/IUsersModel";
 import { UsersModel } from "../models/usersModel";
 
 export class SearchDatalistController {
     private tagName: string;
-    private usersModel: UsersModel;
-    public static addEventListeners: any;
+    private usersModel: IUsersModel;
+    public static addEventListeners: (rootNode: HTMLElement) => void;
     private getSelectedItem: any;
     private dispatchInputEvent: any;
 
-    constructor(tagName: string, usersModel: UsersModel) {
+    constructor(tagName: string, usersModel: IUsersModel) {
         this.tagName = tagName;
         this.usersModel = usersModel;
 
-        SearchDatalistController.addEventListeners = (rootNode: HTMLElement) => this.addEventListeners(rootNode);
+        SearchDatalistController.addEventListeners = (rootNode: HTMLElement) => {this.addEventListeners(rootNode)};
     }
 
     private addEventListeners(rootNode: HTMLElement): void {
@@ -84,11 +85,15 @@ export class SearchDatalistController {
         return SearchDatalistComponent.getNode();
     }
 
-    public dispatchEvent(ev: any): void {
-        SearchDatalistComponent.dispatchEvent(ev);
+    public dispatchEvent(event: Event): void {
+        SearchDatalistComponent.dispatchEvent(event);
     }
 
-    public initComponent(componentID: string, getSelectedItem: any, dispatchInputEvent: any): Promise<HTMLElement> {
+    public initComponent(
+        componentID: string,
+        getSelectedItem: (id: string) => HTMLElement,
+        dispatchInputEvent: (event: Event) => void
+    ): Promise<HTMLElement> {
         return new Promise((res) => {
             SearchDatalistComponent.init(componentID);
 

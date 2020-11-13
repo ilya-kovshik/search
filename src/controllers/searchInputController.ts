@@ -2,21 +2,21 @@ import { UsersModel } from "../models/usersModel";
 import { SearchInputComponent } from "../components/search-input-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
 import { IUserModelItem } from "../interfaces/IUserModelItem";
+import { IUsersModel } from "../interfaces/IUsersModel";
 
 export class SearchInputController {
     private tagName: string;
-    public usersModel: UsersModel;
+    public usersModel: IUsersModel;
     public static addEventListeners: any;
     public dispatchDatalistEvent: any;
     public getSelectedItem: (id: string) => HTMLElement;
 
-    constructor(tagName: string, usersModel: UsersModel) {
+    constructor(tagName: string, usersModel: IUsersModel) {
         this.tagName = tagName;
         this.usersModel = usersModel;
 
         SearchInputController.addEventListeners = (rootNode: HTMLElement) => this.addEventListeners(rootNode);
         this.getSelectedItem = (id: string) => SearchInputComponent.getSelectedItem(id);
-
     }
 
     private addEventListeners(rootNode: HTMLElement): void {
@@ -130,11 +130,14 @@ export class SearchInputController {
         rootNode.dispatchEvent(new Event("windowKeyDownEvent"));
     }
 
-    public dispatchEvent(event: Event) {
+    public dispatchEvent(event: Event): void {
         return SearchInputComponent.dispatchEvent(event);
     }
 
-    public initComponent(componentID: string, dispatchDatalistEvent: any): Promise<HTMLElement> {
+    public initComponent(
+        componentID: string,
+        dispatchDatalistEvent: (event: Event) => void
+    ): Promise<HTMLElement> {
         return new Promise((res) => {
             SearchInputComponent.init(componentID);
 

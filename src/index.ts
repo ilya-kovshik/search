@@ -1,9 +1,10 @@
 import { UsersModel } from "./models/usersModel";
 import {SearchInputController} from "./controllers/searchInputController";
 import { SearchDatalistController } from "./controllers/searchDatalistController";
+import { IUsersModel } from "./interfaces/IUsersModel";
 
 async function createSearchComponent(): Promise<string> {
-	const model: any = new UsersModel();
+	const model: IUsersModel = new UsersModel();
 	const searchDatalistController: SearchDatalistController = new SearchDatalistController("search-datalist", model);
 	const searchInputController: SearchInputController = new SearchInputController("search-input", model);
 

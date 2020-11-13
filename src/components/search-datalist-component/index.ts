@@ -1,7 +1,7 @@
 import { SearchDatalistController } from "../../controllers/searchDatalistController";
 import { icons } from "../../icons";
 import { ISearchComponentNames } from "../../interfaces/ISearchComponentNames";
-import { getSelectedListStyles, getSelectedListTemplate } from "../search-component/templates/selectedlist";
+import { getSelectedListStyles, getSelectedListTemplate } from "./templates/selectedlist";
 
 export class SearchDatalistComponent extends HTMLElement {
     private static isComponentInit = false;
@@ -12,15 +12,15 @@ export class SearchDatalistComponent extends HTMLElement {
 		selectedListId: "selectedList",
 		ctrlButtons: "controls-buttons"
 	};
-	public static getNode: any;
-	public static dispatchEvent: any;
+	public static getNode: () => HTMLElement;
+	public static dispatchEvent: (event: Event) => void;
 
     constructor() {
 		super();
 		this.shadow = this.attachShadow({mode: "open"});
 		SearchDatalistComponent.getNode = () => this;
 
-		SearchDatalistComponent.dispatchEvent = (ev: any) => {
+		SearchDatalistComponent.dispatchEvent = (ev: Event) => {
 			this.dispatchEvent(ev);
 		};
 	}
@@ -51,7 +51,7 @@ export class SearchDatalistComponent extends HTMLElement {
 
 	private addEventListeners(): void {
 		this.addEventListener("dataListClick", (e: any) => {
-			const target = e.detail.target;
+			const target: HTMLElement = e.detail.target;
 
 			if(target.tagName.toLowerCase() === "li" && target.dataset.id) {
 				const id: string = e.detail.id;
