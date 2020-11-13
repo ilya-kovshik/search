@@ -1,51 +1,37 @@
 import { UsersModel } from "../models/usersModel";
-import { SearchComponent } from "../components/search-component";
-import { IUserModelItem } from "../interfaces/IUserModelItem";
+import { SearchInputComponent } from "../components/search-input-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
-export class SearchComponentController {
+import { IUserModelItem } from "../interfaces/IUserModelItem";
+
+export class SearchInputController {
     private tagName: string;
-    private usersModel: UsersModel;
+    public usersModel: UsersModel;
+    public static addEventListeners: any;
+    public dispatchDatalistEvent: any;
+    public getSelectedItem: (id: string) => HTMLElement;
 
     constructor(tagName: string, usersModel: UsersModel) {
         this.tagName = tagName;
         this.usersModel = usersModel;
-    }
 
-    private observeNodes(componentID: string): Promise<HTMLElement> {
-        return new Promise((res) => {
-            const observerCallback = (mutationsList: any) => {
-                for(const mutation of mutationsList) {
-                    if (mutation.type === "childList" && mutation.addedNodes.length) {
-                        const node: HTMLElement | null = document.getElementById(componentID);
+        SearchInputController.addEventListeners = (rootNode: HTMLElement) => this.addEventListeners(rootNode);
+        this.getSelectedItem = (id: string) => SearchInputComponent.getSelectedItem(id);
 
-                        if(node) {
-                            observer.disconnect();
-
-                            res(node);
-                        }
-                    }
-                }
-            };
-            const observer: MutationObserver = new MutationObserver(observerCallback);
-
-            observer.observe(document, { attributes: true, childList: true, subtree: true });
-        });
     }
 
     private addEventListeners(rootNode: HTMLElement): void {
-        const templateConfig: ISearchComponentNames = SearchComponent.getTemplateConfig();
+        const templateConfig: ISearchComponentNames = SearchInputComponent.getTemplateConfig();
         const shadowRoot: ShadowRoot = rootNode.shadowRoot as ShadowRoot;
 
-        this.addShowListButtonEvent(shadowRoot, templateConfig, rootNode);
+        this.addShowListButtonEvents(shadowRoot, templateConfig, rootNode);
         this.addHideListButtonEvents(shadowRoot, templateConfig, rootNode);
         this.addDataListEvents(shadowRoot, templateConfig, rootNode);
-        this.addSelectedListEvents(shadowRoot, templateConfig, rootNode);
         this.addSearchInputEvents(shadowRoot, templateConfig, rootNode);
         this.addClearSelectionButtonEvents(shadowRoot, templateConfig, rootNode);
         this.addWindowEvents(rootNode);
     }
 
-    private addShowListButtonEvent(
+    private addShowListButtonEvents(
         shadowRoot: ShadowRoot,
         templateConfig: ISearchComponentNames,
         rootNode: HTMLElement
@@ -91,30 +77,12 @@ export class SearchComponentController {
                     target: e.target,
                     modelUnselectItemClb: this.usersModel.unselectItem.bind(this.usersModel),
                     modelIsAnySelectionClb: this.usersModel.isAnySelection.bind(this.usersModel),
-                    modelSelectItemClb: this.usersModel.selectItem.bind(this.usersModel)
+                    modelSelectItemClb: this.usersModel.selectItem.bind(this.usersModel),
+                    getSelectedItem: this.getSelectedItem
                 }
             });
 
-            rootNode.dispatchEvent(event);
-        });
-    }
-
-    private addSelectedListEvents(
-        shadowRoot: ShadowRoot,
-        templateConfig: ISearchComponentNames,
-        rootNode: HTMLElement
-    ): void {
-        const selectedList: HTMLInputElement | null = shadowRoot.querySelector(`#${templateConfig.selectedListId}`);
-
-        selectedList?.addEventListener("click", (e: Event) => {
-            const event: Event = new CustomEvent("selectedListClick", {
-                detail: {
-                    target: e.target,
-                    unselectItem: (id: string) => this.usersModel.unselectItem.call(this.usersModel, id),
-                    isAnySelection: this.usersModel.isAnySelection.bind(this.usersModel)
-                }
-            });
-
+            this.dispatchDatalistEvent(event);
             rootNode.dispatchEvent(event);
         });
     }
@@ -148,7 +116,10 @@ export class SearchComponentController {
             shadowRoot.querySelector(`.${templateConfig.ctrlButtons}__clear-selection`);
 
         clearSelectionButton?.addEventListener("click", () => {
-            rootNode.dispatchEvent(new Event("clearSelectionButtonClick"));
+            const event: Event = new Event("clearSelectionButtonClick");
+
+            rootNode.dispatchEvent(event);
+            this.dispatchDatalistEvent(event);
 
             this.usersModel.unselectAllItems();
         });
@@ -159,16 +130,22 @@ export class SearchComponentController {
         rootNode.dispatchEvent(new Event("windowKeyDownEvent"));
     }
 
-    public initSearchComponent(componentID: string): Promise<string> {
+    public dispatchEvent(event: Event) {
+        return SearchInputComponent.dispatchEvent(event);
+    }
+
+    public initComponent(componentID: string, dispatchDatalistEvent: any): Promise<HTMLElement> {
         return new Promise((res) => {
-            SearchComponent.init();
+            SearchInputComponent.init(componentID);
 
-            this.observeNodes(componentID).then((node: HTMLElement) => {
-                this.addEventListeners(node);
+            const element: HTMLElement = document.createElement(this.tagName);
 
-            });
+            element.setAttribute("id", componentID);
 
-            res(`<${this.tagName} id="${componentID}"></${this.tagName}>`);
+            this.dispatchDatalistEvent = dispatchDatalistEvent;
+            this.getSelectedItem = (id: string) => SearchInputComponent.getSelectedItem(id);
+
+            res(element);
         });
     }
 }

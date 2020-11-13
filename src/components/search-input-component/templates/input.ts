@@ -1,4 +1,4 @@
-const getDataListTemplate = (config: {datalistId: string, ctrlButtons: string}): string => (`
+const getInputTemplate = (config: {datalistId: string, ctrlButtons: string}): string => (`
         <div class="${config.datalistId}__wrapper">
             <div id="${config.datalistId}">
                 <input id="${config.datalistId}__input" type="text">
@@ -14,7 +14,7 @@ const getDataListTemplate = (config: {datalistId: string, ctrlButtons: string}):
     `
 );
 
-const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): string => (`
+const getInputStyles = (config: {datalistId: string, ctrlButtons: string}): string => (`
     #${config.datalistId} {
         position: relative;
         color: #000;
@@ -135,4 +135,4 @@ const getDataListStyles = (config: {datalistId: string, ctrlButtons: string}): s
     }
 `);
 
-export {getDataListTemplate, getDataListStyles};
+export {getInputTemplate, getInputStyles};

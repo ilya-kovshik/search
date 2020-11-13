@@ -1,17 +1,35 @@
-import { SearchComponentController } from "./controllers/searchComponentController";
 import { UsersModel } from "./models/usersModel";
+import {SearchInputController} from "./controllers/searchInputController";
+import { SearchDatalistController } from "./controllers/searchDatalistController";
 
+async function createSearchComponent(): Promise<string> {
+	const model: any = new UsersModel();
+	const searchDatalistController: SearchDatalistController = new SearchDatalistController("search-datalist", model);
+	const searchInputController: SearchInputController = new SearchInputController("search-input", model);
 
-async function createNewComponent(name: string, id: string): Promise<string> {
-	const controller: SearchComponentController = new SearchComponentController(name, new UsersModel());
+	const datalist: HTMLElement = await searchDatalistController.initComponent(
+		"search-datalist",
+		searchInputController.getSelectedItem,
+		searchInputController.dispatchEvent
+	);
+	const input: HTMLElement = await searchInputController.initComponent(
+		"search-input",
+		searchDatalistController.dispatchEvent
+	);
 
-	return await controller.initSearchComponent(id);
+	return `
+		<div>
+			${datalist.outerHTML}
+			${input.outerHTML}
+		</div>
+	`;
+
 }
 
 async function init(): Promise<void> {
 	const root: HTMLElement | null = document.getElementById("root");
 
-	const html: string = await createNewComponent("search-component", "SC1");
+	const html: string = await createSearchComponent();
 
 	if(root) {
 		root.innerHTML = html;
