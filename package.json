@@ -8,12 +8,12 @@
     "serve": "webpack serve",
     "lint:ts": "eslint . --ext .ts",
     "lint:ts:fix": "eslint . --ext .ts --fix",
-    "prettier": "prettier --config .prettierrc src/**/*.ts --write",
+    "prettier:write": "prettier --config .prettierrc src/**/*.ts --write",
     "prettier:check": "prettier --config .prettierrc src/**/*.ts --check"
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "npm run prettier:check", 
+      "npm run prettier:check & npm run lint:ts", 
       "git add"
     ]
   },
