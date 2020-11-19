@@ -12,8 +12,8 @@
     "prettier:check": "prettier --config .prettierrc src/**/*.ts --check"
   },
   "lint-staged": {
-    "packages/**/*.{js,ts}": [
-      "npm run --silent lint:ts & prettier:check", 
+    "src/**/*.ts": [
+      "npm run prettier:check", 
       "git add"
     ]
   },
