@@ -1,5 +1,5 @@
 export interface ISearchComponentNames {
-    datalistId: string;
-    ctrlButtons: string;
-    selectedListId: string;
+  datalistId: string;
+  ctrlButtons: string;
+  selectedListId: string;
 }

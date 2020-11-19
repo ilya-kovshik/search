@@ -1,6 +1,6 @@
-import {IServerConfig} from "../interfaces/IServerConfig";
+import { IServerConfig } from "../interfaces/IServerConfig";
 
 export const serverConfig: IServerConfig = {
-    baseUrl: "https://jsonplaceholder.typicode.com",
-    users: "users"
+  baseUrl: "https://jsonplaceholder.typicode.com",
+  users: "users"
 };

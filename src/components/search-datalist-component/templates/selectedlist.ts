@@ -1,6 +1,8 @@
-import {ISearchComponentNames} from "../../../interfaces/ISearchComponentNames";
+import { ISearchComponentNames } from "../../../interfaces/ISearchComponentNames";
 
-const getSelectedListTemplate: (config: ISearchComponentNames) => string = (config): string => `
+const getSelectedListTemplate: (config: ISearchComponentNames) => string = (
+  config
+): string => `
     <ul id="${config.selectedListId}">
         <li data-id="all">
             <span>All</span>
@@ -8,7 +10,9 @@ const getSelectedListTemplate: (config: ISearchComponentNames) => string = (conf
     </ul>
 `;
 
-const getSelectedListStyles: (config: ISearchComponentNames) => string = (config): string => `
+const getSelectedListStyles: (config: ISearchComponentNames) => string = (
+  config
+): string => `
     #${config.selectedListId} {
         list-style: none;
         padding: 10px;
@@ -31,4 +35,4 @@ const getSelectedListStyles: (config: ISearchComponentNames) => string = (config
     }
 `;
 
-export {getSelectedListTemplate, getSelectedListStyles};
+export { getSelectedListTemplate, getSelectedListStyles };

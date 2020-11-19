@@ -1,4 +1,4 @@
 export interface IServerConfig {
-    baseUrl: string;
-    users?: string;
+  baseUrl: string;
+  users?: string;
 }

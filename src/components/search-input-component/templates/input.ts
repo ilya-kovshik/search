@@ -1,4 +1,7 @@
-const getInputTemplate = (config: {datalistId: string, ctrlButtons: string}): string => (`
+const getInputTemplate = (config: {
+  datalistId: string;
+  ctrlButtons: string;
+}): string => `
         <div class="${config.datalistId}__wrapper">
             <div id="${config.datalistId}">
                 <input id="${config.datalistId}__input" type="text">
@@ -11,10 +14,12 @@ const getInputTemplate = (config: {datalistId: string, ctrlButtons: string}): st
                 <button class="${config.ctrlButtons}__clear-selection hidden">Clear selection</button>
             </div>
         </div>
-    `
-);
+    `;
 
-const getInputStyles = (config: {datalistId: string, ctrlButtons: string}): string => (`
+const getInputStyles = (config: {
+  datalistId: string;
+  ctrlButtons: string;
+}): string => `
     #${config.datalistId} {
         position: relative;
         color: #000;
@@ -133,6 +138,6 @@ const getInputStyles = (config: {datalistId: string, ctrlButtons: string}): stri
     .${config.ctrlButtons} span:hover {
         background: #9E9E9E;
     }
-`);
+`;
 
-export {getInputTemplate, getInputStyles};
+export { getInputTemplate, getInputStyles };
