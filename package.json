@@ -6,8 +6,21 @@
   "scripts": {
     "build": "webpack",
     "serve": "webpack serve",
-    "lint": "eslint . --ext .ts --fix",
-    "prettier-format": "prettier --config .prettierrc src/**/*.ts --write"
+    "lint:ts": "eslint . --ext .ts",
+    "lint:ts:fix": "eslint . --ext .ts --fix",
+    "prettier": "prettier --config .prettierrc src/**/*.ts --write",
+    "prettier:check": "prettier --config .prettierrc src/**/*.ts --check"
+  },
+  "lint-staged": {
+    "packages/**/*.{js,ts}": [
+      "npm run --silent lint:ts & prettier:check", 
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "author": "",
   "license": "ISC",
@@ -17,6 +30,8 @@
     "eslint": "^7.13.0",
     "eslint-config-xbsoftware": "git+https://bitbucket.org/xbsltd/eslint.git#v3.0.0",
     "eslint-plugin-import": "^2.22.1",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.5.1",
     "prettier": "^2.1.2",
     "ts-loader": "^8.0.5",
     "typescript": "^4.0.3",
