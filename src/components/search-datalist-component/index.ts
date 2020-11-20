@@ -63,6 +63,7 @@ export class SearchDatalistComponent extends HTMLElement {
 
         if (dataListItem.classList.contains("selected")) {
           selectedListItem.remove();
+          e.detail.modelUnselectItemClb(id);
 
           if (!e.detail.modelIsAnySelectionClb()) {
             this.getSelectedList()

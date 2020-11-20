@@ -88,8 +88,6 @@ export class SearchInputComponent extends HTMLElement {
         if (dataListItem.classList.contains("selected")) {
           dataListItem.classList.remove("selected");
 
-          e.detail.modelUnselectItemClb(id);
-
           if (!e.detail.modelIsAnySelectionClb()) {
             this.getClearSelectionButton().classList.add("hidden");
           }
