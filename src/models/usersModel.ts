@@ -62,4 +62,8 @@ export class UsersModel implements IUsersModel {
   public unselectAllItems(): void {
     this.selectedItemsIds.clear();
   }
+
+  public getSelectedItems(): string[] {
+    return [...this.selectedItemsIds];
+  }
 }

@@ -47,43 +47,6 @@ class SearchComponentController {
     return this.wrapper;
   }
 
-  private createSubComponents(): {
-    inputWrapper: any;
-    wrapper: any;
-    dropdown: any;
-    hideDropdownButton: any;
-    clearSelectionButton: any;
-    datalist: any;
-    input: any;
-    showDropdownButton: any;
-  } {
-    const wrapper: any = document.createElement("div");
-    const inputWrapper: any = document.createElement("div");
-    const datalist: any = document.createElement("datalist-component");
-    const input: any = document.createElement("input-component");
-    const dropdown: any = document.createElement("dropdown-component");
-    const clearSelectionButton: any = document.createElement(
-      "clear-selection-button-component"
-    );
-    const hideDropdownButton: any = document.createElement(
-      "hide-dropdown-button-component"
-    );
-    const showDropdownButton: any = document.createElement(
-      "show-dropdown-button-component"
-    );
-
-    return {
-      inputWrapper,
-      wrapper,
-      dropdown,
-      hideDropdownButton,
-      clearSelectionButton,
-      datalist,
-      input,
-      showDropdownButton
-    };
-  }
-
   private async init() {
     this.dropdown.parseData(await this.usersModel.getUsers());
 
@@ -120,7 +83,7 @@ class SearchComponentController {
     });
   }
   private setClearSelectionButtonEvents() {
-    this.showDropdownButton.addEventListener("onButtonClick", () => {
+    this.clearSelectionButton.addEventListener("onButtonClick", () => {
       this.usersModel.unselectAllItems();
 
       this.clearSelectionButton.hide();
@@ -139,7 +102,8 @@ class SearchComponentController {
       this.hideDropdownButton.show();
 
       this.dropdown.parseData(
-        users.filter((el) => el.name.toLowerCase().includes(value))
+        users.filter((el) => el.name.toLowerCase().includes(value)),
+        this.usersModel.getSelectedItems()
       );
     });
   }

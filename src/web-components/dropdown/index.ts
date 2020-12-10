@@ -40,7 +40,9 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
       this.shadowRoot?.appendChild(template.content.cloneNode(true));
     }
 
-    public parseData(data: IUserModelItem[]) {
+    public parseData(data: IUserModelItem[], selectedItemsIds: string[] = []) {
+      const dropdown = this.getDropdown();
+
       const dropdownItemsArr: HTMLElement[] = data.reduce(
         (acc: HTMLElement[], el) => {
           const dropdownItem: HTMLElement = this.createDropdownItem(
@@ -48,14 +50,16 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
             el.id
           );
 
+          if (selectedItemsIds.includes(el.id)) {
+            (dropdownItem as any).toggleSelection();
+          }
+
           acc.push(dropdownItem);
 
           return acc;
         },
         []
       );
-
-      const dropdown = this.getDropdown();
 
       this.clear();
       dropdown?.append(...dropdownItemsArr);
