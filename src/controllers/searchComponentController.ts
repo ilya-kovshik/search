@@ -50,8 +50,8 @@ class SearchComponentController {
   private async init() {
     this.dropdown.parseData(await this.usersModel.getUsers());
 
-    this.inputWrapper.style.display = "flex";
-    this.wrapper.classList.add("input-wrapper");
+    this.inputWrapper.classList.add("input-wrapper");
+    this.wrapper.classList.add("wrapper");
 
     this.hideDropdownButton.hide();
     this.dropdown.hide();
