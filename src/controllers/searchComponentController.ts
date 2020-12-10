@@ -1,23 +1,64 @@
 import { IUsersModel } from "../interfaces/IUsersModel";
 import { UsersModel } from "../models/usersModel";
 
-interface ISearchSubCompomponents {
-  datalist: any;
-  input: any;
-  dropdown: any;
-  clearSelectionButton: any;
-  hideDropdownButton: any;
-  showDropdownButton: any;
-  usersModel: IUsersModel;
-}
+import "./searchComponentController.less";
 
 class SearchComponentController {
-  constructor() {
-    const wrapper: any = document.createElement("div");
-    const inputWrapper: HTMLElement = document.createElement("div");
-    inputWrapper.style.display = "flex";
-    wrapper.classList.add("input-wrapper");
+  private usersModel: IUsersModel;
+  private wrapper: any;
+  private inputWrapper: any;
+  private datalist: any;
+  private input: any;
+  private dropdown: any;
+  private clearSelectionButton: any;
+  private hideDropdownButton: any;
+  private showDropdownButton: any;
 
+  constructor() {
+    this.usersModel = new UsersModel();
+    this.wrapper = document.createElement("div");
+    this.inputWrapper = document.createElement("div");
+    this.datalist = document.createElement("datalist-component");
+    this.input = document.createElement("input-component");
+    this.dropdown = document.createElement("dropdown-component");
+    this.clearSelectionButton = document.createElement(
+      "clear-selection-button-component"
+    );
+    this.hideDropdownButton = document.createElement(
+      "hide-dropdown-button-component"
+    );
+    this.showDropdownButton = document.createElement(
+      "show-dropdown-button-component"
+    );
+
+    this.init();
+
+    this.setEventListeners();
+
+    this.inputWrapper.append(
+      this.input,
+      this.showDropdownButton,
+      this.hideDropdownButton,
+      this.clearSelectionButton
+    );
+
+    this.wrapper.append(this.datalist, this.inputWrapper, this.dropdown);
+
+    return this.wrapper;
+  }
+
+  private createSubComponents(): {
+    inputWrapper: any;
+    wrapper: any;
+    dropdown: any;
+    hideDropdownButton: any;
+    clearSelectionButton: any;
+    datalist: any;
+    input: any;
+    showDropdownButton: any;
+  } {
+    const wrapper: any = document.createElement("div");
+    const inputWrapper: any = document.createElement("div");
     const datalist: any = document.createElement("datalist-component");
     const input: any = document.createElement("input-component");
     const dropdown: any = document.createElement("dropdown-component");
@@ -31,156 +72,142 @@ class SearchComponentController {
       "show-dropdown-button-component"
     );
 
-    const usersModel: IUsersModel = new UsersModel();
-
-    this.init({
+    return {
+      inputWrapper,
+      wrapper,
       dropdown,
       hideDropdownButton,
       clearSelectionButton,
-      usersModel
-    });
-
-    this.setEventListeners({
       datalist,
       input,
-      dropdown,
-      clearSelectionButton,
-      hideDropdownButton,
-      showDropdownButton,
-      usersModel
-    });
-
-    inputWrapper.append(
-      input,
-      showDropdownButton,
-      hideDropdownButton,
-      clearSelectionButton
-    );
-
-    wrapper.append(datalist, inputWrapper, dropdown);
-
-    return wrapper;
+      showDropdownButton
+    };
   }
 
-  private async init({
-    dropdown,
-    hideDropdownButton,
-    clearSelectionButton,
-    usersModel
-  }: {
-    dropdown: any;
-    hideDropdownButton: any;
-    clearSelectionButton: any;
-    usersModel: IUsersModel;
-  }) {
-    dropdown.parseData(await usersModel.getUsers());
+  private async init() {
+    this.dropdown.parseData(await this.usersModel.getUsers());
 
-    hideDropdownButton.hide();
-    dropdown.hide();
-    clearSelectionButton.hide();
+    this.inputWrapper.style.display = "flex";
+    this.wrapper.classList.add("input-wrapper");
+
+    this.hideDropdownButton.hide();
+    this.dropdown.hide();
+    this.clearSelectionButton.hide();
   }
 
-  private async setEventListeners({
-    datalist,
-    input,
-    dropdown,
-    clearSelectionButton,
-    hideDropdownButton,
-    showDropdownButton,
-    usersModel
-  }: ISearchSubCompomponents) {
-    hideDropdownButton.addEventListener("onButtonClick", () => {
-      showDropdownButton.show();
-      hideDropdownButton.hide();
-      dropdown.hide();
+  private async setEventListeners() {
+    this.setHideDropdownButtonEvents();
+    this.setShowDropdownButtonEvents();
+    this.setClearSelectionButtonEvents();
+    this.setInputEvents();
+    this.setDropdownEvents();
+    this.setDatalistEvents();
+    this.setWindowEvents();
+  }
+
+  private setHideDropdownButtonEvents() {
+    this.hideDropdownButton.addEventListener("onButtonClick", () => {
+      this.showDropdownButton.show();
+      this.hideDropdownButton.hide();
+      this.dropdown.hide();
     });
-
-    showDropdownButton.addEventListener("onButtonClick", () => {
-      showDropdownButton.hide();
-      hideDropdownButton.show();
-      dropdown.show();
+  }
+  private setShowDropdownButtonEvents() {
+    this.showDropdownButton.addEventListener("onButtonClick", () => {
+      this.showDropdownButton.hide();
+      this.hideDropdownButton.show();
+      this.dropdown.show();
     });
+  }
+  private setClearSelectionButtonEvents() {
+    this.showDropdownButton.addEventListener("onButtonClick", () => {
+      this.usersModel.unselectAllItems();
 
-    clearSelectionButton.addEventListener("onButtonClick", () => {
-      usersModel.unselectAllItems();
-
-      clearSelectionButton.hide();
-      datalist.clearAll();
-      dropdown.unselectAllItems();
+      this.clearSelectionButton.hide();
+      this.datalist.clearAll();
+      this.dropdown.unselectAllItems();
     });
+  }
 
-    input.addEventListener("input", async () => {
-      const users = await usersModel.getUsers();
-      const value: string = input.getValue();
+  private setInputEvents() {
+    this.input.addEventListener("input", async () => {
+      const users = await this.usersModel.getUsers();
+      const value: string = this.input.getValue();
 
-      dropdown.show();
-      showDropdownButton.hide();
-      hideDropdownButton.show();
+      this.dropdown.show();
+      this.showDropdownButton.hide();
+      this.hideDropdownButton.show();
 
-      dropdown.parseData(
+      this.dropdown.parseData(
         users.filter((el) => el.name.toLowerCase().includes(value))
       );
     });
+  }
 
-    dropdown.addEventListener("onItemSelect", async (e: any) => {
-      const user = await usersModel.getItem(e.detail.id);
+  private setDropdownEvents() {
+    this.dropdown.addEventListener("onItemSelect", async (e: any) => {
+      const user = await this.usersModel.getItem(e.detail.id);
 
       if (!user) {
         return;
       }
 
-      if (!usersModel.isAnySelection()) {
-        datalist.removeDefaultOption();
-        clearSelectionButton.show();
+      if (!this.usersModel.isAnySelection()) {
+        this.datalist.removeDefaultOption();
+        this.clearSelectionButton.show();
       }
 
-      if (usersModel.isItemSelected(user.id)) {
-        usersModel.unselectItem(user.id);
-        datalist.removeListItem(user.id);
+      if (this.usersModel.isItemSelected(user.id)) {
+        this.usersModel.unselectItem(user.id);
+        this.datalist.removeListItem(user.id);
       } else {
-        usersModel.selectItem(user.id);
-        datalist.addListItem(user.name, user.id);
+        this.usersModel.selectItem(user.id);
+        this.datalist.addListItem(user.name, user.id);
       }
 
-      if (!usersModel.isAnySelection()) {
-        datalist.addDefaultOption();
-        clearSelectionButton.hide();
-      }
-    });
-
-    datalist.addEventListener("onItemDelete", (e: any) => {
-      datalist.removeListItem(e.detail.id);
-      usersModel.unselectItem(e.detail.id);
-      dropdown.unselectItem(e.detail.id);
-
-      if (!usersModel.isAnySelection()) {
-        datalist.addDefaultOption();
-        clearSelectionButton.hide();
+      if (!this.usersModel.isAnySelection()) {
+        this.datalist.addDefaultOption();
+        this.clearSelectionButton.hide();
       }
     });
+  }
 
+  private setDatalistEvents() {
+    this.datalist.addEventListener("onItemDelete", (e: any) => {
+      this.datalist.removeListItem(e.detail.id);
+      this.usersModel.unselectItem(e.detail.id);
+      this.dropdown.unselectItem(e.detail.id);
+
+      if (!this.usersModel.isAnySelection()) {
+        this.datalist.addDefaultOption();
+        this.clearSelectionButton.hide();
+      }
+    });
+  }
+
+  private setWindowEvents() {
     window.addEventListener("click", (e: Event) => {
       const target = e.target;
 
       if (
-        dropdown.isVisible() &&
-        target !== input &&
-        target !== showDropdownButton &&
-        target !== dropdown &&
-        target !== datalist &&
-        target !== clearSelectionButton
+        this.dropdown.isVisible() &&
+        target !== this.input &&
+        target !== this.showDropdownButton &&
+        target !== this.dropdown &&
+        target !== this.datalist &&
+        target !== this.clearSelectionButton
       ) {
-        dropdown.hide();
-        showDropdownButton.show();
-        hideDropdownButton.hide();
+        this.dropdown.hide();
+        this.showDropdownButton.show();
+        this.hideDropdownButton.hide();
       }
     });
 
     window.addEventListener("keydown", (e: KeyboardEvent) => {
       if (e.key.toLowerCase() === "escape") {
-        dropdown.hide();
-        showDropdownButton.show();
-        hideDropdownButton.hide();
+        this.dropdown.hide();
+        this.showDropdownButton.show();
+        this.hideDropdownButton.hide();
       }
     });
   }

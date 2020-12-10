@@ -1,7 +1,6 @@
 import { SearchComponentController } from "./controllers/searchComponentController";
 
 import "./web-components";
-import "./styles.less";
 
 async function init(): Promise<void> {
   const root: HTMLElement | null = document.getElementById("root");
