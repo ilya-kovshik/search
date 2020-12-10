@@ -1,4 +1,4 @@
-import { IUsersModel } from "../interfaces/IUsersModel";
+import { IUsersModel } from "../../interfaces/IUsersModel";
 
 import "./searchComponentController.less";
 
