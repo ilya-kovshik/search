@@ -11,4 +11,5 @@ export interface IUsersModel {
   selectItem(id: string): void;
   unselectItem(id: string): void;
   unselectAllItems(): void;
+  getItem(id: string): Promise<IUserModelItem | undefined>;
 }

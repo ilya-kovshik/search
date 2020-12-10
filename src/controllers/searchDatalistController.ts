@@ -1,4 +1,4 @@
-import { SearchDatalistComponent } from "../components/search-datalist-component";
+import { SearchDatalistComponent } from "../web-components/search-datalist-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
 import { IUsersModel } from "../interfaces/IUsersModel";
 

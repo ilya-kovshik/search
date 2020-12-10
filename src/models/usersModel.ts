@@ -39,6 +39,10 @@ export class UsersModel implements IUsersModel {
     return new Promise((res) => res(this.hash.data));
   }
 
+  public async getItem(id: string): Promise<IUserModelItem | undefined> {
+    return (await this.getUsers()).find((el: IUserModelItem) => el.id === id);
+  }
+
   public isItemSelected(id: string): boolean {
     return this.selectedItemsIds.has(id);
   }

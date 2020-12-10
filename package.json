@@ -13,8 +13,8 @@
   },
   "lint-staged": {
     "src/**/*.ts": [
-      "npm run prettier:check", 
-      "npm run lint:ts", 
+      "npm run prettier:check",
+      "npm run lint:ts",
       "git add"
     ]
   },

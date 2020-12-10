@@ -1,4 +1,4 @@
-import { SearchInputComponent } from "../components/search-input-component";
+import { SearchInputComponent } from "../web-components/search-input-component";
 import { ISearchComponentNames } from "../interfaces/ISearchComponentNames";
 import { IUserModelItem } from "../interfaces/IUserModelItem";
 import { IUsersModel } from "../interfaces/IUsersModel";
