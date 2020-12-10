@@ -4,7 +4,7 @@
   template.innerHTML = `
           <style>
             @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
-          li {
+          li button {
             display: block;
             text-align: left;
             padding: 0.8em 1em 0.8em 1em;
@@ -15,15 +15,20 @@
             border-radius: 7px;
             border: #C7E0EE 2px solid;
             font-weight: 700;
+            width: 90%;
           }
       
-          li:hover,
-          li.selected {
+          li button:hover,
+          li.selected button {
               background: #007DAF;
               color: #fff;
           }
+
+          li button:focus {
+            border: 0;
+          }
           </style>
-          <li></li>
+          <li><button></button></li>
         `;
 
   class DropdownItem extends HTMLElement {
@@ -40,17 +45,19 @@
     }
 
     private setEventListeners() {
-      this.getDropdownItem()?.addEventListener("click", () => {
-        this.toggleSelection();
+      this.getDropdownItem()
+        ?.querySelector("button")
+        ?.addEventListener("click", () => {
+          this.toggleSelection();
 
-        this.dispatchEvent(
-          new CustomEvent("onDropdownItemClick", {
-            detail: {
-              id: this.dataset.id
-            }
-          })
-        );
-      });
+          this.dispatchEvent(
+            new CustomEvent("onDropdownItemClick", {
+              detail: {
+                id: this.dataset.id
+              }
+            })
+          );
+        });
     }
 
     private attributeChangedCallback(
@@ -59,13 +66,13 @@
       newv: string
     ) {
       if (name === "value") {
-        const li = this.shadowRoot?.querySelector("li");
+        const button = this.shadowRoot?.querySelector("li button");
 
-        if (!li) {
+        if (!button) {
           return;
         }
 
-        li.innerHTML = newv;
+        button.innerHTML = newv;
       }
     }
 
