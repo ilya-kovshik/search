@@ -40,13 +40,17 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
       this.shadowRoot?.appendChild(template.content.cloneNode(true));
     }
 
-    public parseData(data: IUserModelItem[], selectedItemsIds: string[] = []) {
+    public parseData(
+      data: IUserModelItem[],
+      selectedItemsIds: string[] = [],
+      fieldName: string,
+      getModelItemValue: any
+    ) {
       const dropdown = this.getDropdown();
-
       const dropdownItemsArr: HTMLElement[] = data.reduce(
         (acc: HTMLElement[], el) => {
           const dropdownItem: HTMLElement = this.createDropdownItem(
-            el.name,
+            getModelItemValue(el, fieldName),
             el.id
           );
 

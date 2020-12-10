@@ -1,5 +1,4 @@
 import { IUsersModel } from "../interfaces/IUsersModel";
-import { UsersModel } from "../models/usersModel";
 
 import "./searchComponentController.less";
 
@@ -13,9 +12,11 @@ class SearchComponentController {
   private clearSelectionButton: any;
   private hideDropdownButton: any;
   private showDropdownButton: any;
+  private fieldName: string;
 
-  constructor() {
-    this.usersModel = new UsersModel();
+  constructor(model: IUsersModel, fieldName: string) {
+    this.usersModel = model;
+    this.fieldName = fieldName;
     this.wrapper = document.createElement("div");
     this.inputWrapper = document.createElement("div");
     this.datalist = document.createElement("datalist-component");
@@ -48,7 +49,12 @@ class SearchComponentController {
   }
 
   private async init() {
-    this.dropdown.parseData(await this.usersModel.getUsers());
+    this.dropdown.parseData(
+      await this.usersModel.getUsers(),
+      [],
+      this.fieldName,
+      this.getModelItemValue
+    );
 
     this.inputWrapper.classList.add("input-wrapper");
     this.wrapper.classList.add("wrapper");
@@ -102,8 +108,16 @@ class SearchComponentController {
       this.hideDropdownButton.show();
 
       this.dropdown.parseData(
-        users.filter((el) => el.name.toLowerCase().includes(value)),
-        this.usersModel.getSelectedItems()
+        users.filter(
+          (el) =>
+            this.getModelItemValue(el, this.fieldName)
+              .toLowerCase()
+              .includes(value),
+          []
+        ),
+        this.usersModel.getSelectedItems(),
+        this.fieldName,
+        this.getModelItemValue
       );
     });
   }
@@ -126,7 +140,10 @@ class SearchComponentController {
         this.datalist.removeListItem(user.id);
       } else {
         this.usersModel.selectItem(user.id);
-        this.datalist.addListItem(user.name, user.id);
+        this.datalist.addListItem(
+          this.getModelItemValue(user, this.fieldName),
+          user.id
+        );
       }
 
       if (!this.usersModel.isAnySelection()) {
@@ -174,6 +191,20 @@ class SearchComponentController {
         this.hideDropdownButton.hide();
       }
     });
+  }
+
+  private getModelItemValue(obj: any, fieldName: string) {
+    const fieldArr: string[] = fieldName.split(".");
+    let tempObj = obj;
+    let val;
+
+    while (fieldArr.length !== 0) {
+      const prop: any = fieldArr.shift();
+
+      val = tempObj[prop];
+      tempObj = val;
+    }
+    return val;
   }
 }
 export { SearchComponentController };

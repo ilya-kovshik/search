@@ -28,13 +28,11 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
       this.shadowRoot?.appendChild(template.content.cloneNode(true));
     }
 
-    // private connectedCallback() {}
-
-    // private disconnectedCallback() {}
-
-    // private attributeChangedCallback() {}
-
-    public parseData(usersArr: IUserModelItem[]) {
+    public parseData(
+      usersArr: IUserModelItem[],
+      fieldName: string,
+      getModelItemValue: any
+    ) {
       const list = this.shadowRoot?.querySelector(".datalist");
 
       if (!list) {
@@ -42,7 +40,7 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
       }
 
       const listItemsArr = usersArr.reduce((res: HTMLElement[], el) => {
-        res.push(this.createListItem(el.name, el.id));
+        res.push(this.createListItem(getModelItemValue(el, fieldName), el.id));
         return res;
       }, []);
 
