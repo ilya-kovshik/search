@@ -33,8 +33,6 @@
       super();
       this.attachShadow({ mode: "open" });
       this.shadowRoot?.appendChild(template.content.cloneNode(true));
-
-      this.setEventListeners();
     }
 
     public hide(): void {
@@ -48,10 +46,34 @@
       return this.shadowRoot?.querySelector(".show-dropdown-button");
     }
 
+    private connectedCallback() {
+      this.setEventListeners();
+    }
+
+    private disconnectedCallback() {
+      this.removeEventListeners();
+    }
+
     private setEventListeners(): void {
-      this.getButton()?.addEventListener("click", () => {
+      const { onClickHandler } = this.getEventListenersHandlers();
+
+      this.getButton()?.addEventListener("click", onClickHandler);
+    }
+
+    private removeEventListeners(): void {
+      const { onClickHandler } = this.getEventListenersHandlers();
+
+      this.getButton()?.removeEventListener("click", onClickHandler);
+    }
+
+    private getEventListenersHandlers() {
+      const onClickHandler = () => {
         this.dispatchEvent(new Event("onButtonClick"));
-      });
+      };
+
+      return {
+        onClickHandler
+      };
     }
   }
 

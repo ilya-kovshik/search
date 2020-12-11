@@ -49,6 +49,10 @@ class SearchComponentController {
   }
 
   private async init() {
+    this.hideDropdownButton.hide();
+    this.dropdown.hide();
+    this.clearSelectionButton.hide();
+
     this.dropdown.parseData(
       await this.usersModel.getUsers(),
       [],
@@ -58,10 +62,6 @@ class SearchComponentController {
 
     this.inputWrapper.classList.add("input-wrapper");
     this.wrapper.classList.add("wrapper");
-
-    this.hideDropdownButton.hide();
-    this.dropdown.hide();
-    this.clearSelectionButton.hide();
   }
 
   private async setEventListeners() {
