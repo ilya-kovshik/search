@@ -49,15 +49,15 @@ class SearchComponentController {
     this.dropdown.hide();
     this.clearSelectionButton.hide();
 
+    this.inputWrapper.classList.add("input-wrapper");
+    this.wrapper.classList.add("wrapper");
+
     this.dropdown.parseData(
       await this.usersModel.getUsers(),
       [],
       this.fieldName,
       this.getModelItemValue
     );
-
-    this.inputWrapper.classList.add("input-wrapper");
-    this.wrapper.classList.add("wrapper");
   }
 
   private async setEventListeners() {
