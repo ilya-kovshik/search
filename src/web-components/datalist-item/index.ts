@@ -79,5 +79,5 @@
     }
   }
 
-  window.customElements.define("datalist-item-component", DatalistItem);
+  window.customElements.define("results-datalist-item", DatalistItem);
 })();

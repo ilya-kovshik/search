@@ -105,7 +105,7 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
 
     private createDropdownItem(value: string, id: string): HTMLElement {
       const dropdownItem: HTMLElement = document.createElement(
-        "dropdown-item-component"
+        "dropdown-list-item"
       );
       dropdownItem.setAttribute("value", value);
       dropdownItem.setAttribute("data-id", id);
@@ -142,5 +142,5 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
     }
   }
 
-  window.customElements.define("dropdown-component", Dropdown);
+  window.customElements.define("dropdown-list", Dropdown);
 })();

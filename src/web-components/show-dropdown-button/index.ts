@@ -78,7 +78,7 @@
   }
 
   window.customElements.define(
-    "show-dropdown-button-component",
+    "show-dropdown-button",
     ShowDropdownButtonComponent
   );
 })();

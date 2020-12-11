@@ -4,7 +4,7 @@
   template.innerHTML = `
       <style>
         @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
-        .input-component {
+        .search-input {
             padding-left: 1em;
             width: 100%;
             height: 54px;
@@ -15,12 +15,12 @@
             outline: 0;
         }
     
-        .input-component:focus {
+        .search-input:focus {
             border: 1px solid #3288C1;
             outline: 0;
         }
       </style>
-      <input class="input-component" type="text">
+      <input class="search-input" type="text">
     `;
 
   class InputComponent extends HTMLElement {
@@ -67,5 +67,5 @@
     }
   }
 
-  window.customElements.define("input-component", InputComponent);
+  window.customElements.define("search-input", InputComponent);
 })();

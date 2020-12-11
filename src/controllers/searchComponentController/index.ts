@@ -19,18 +19,14 @@ class SearchComponentController {
     this.fieldName = fieldName;
     this.wrapper = document.createElement("div");
     this.inputWrapper = document.createElement("div");
-    this.datalist = document.createElement("datalist-component");
-    this.input = document.createElement("input-component");
-    this.dropdown = document.createElement("dropdown-component");
+    this.datalist = document.createElement("results-datalist");
+    this.input = document.createElement("search-input");
+    this.dropdown = document.createElement("dropdown-list");
     this.clearSelectionButton = document.createElement(
-      "clear-selection-button-component"
+      "clear-selection-button"
     );
-    this.hideDropdownButton = document.createElement(
-      "hide-dropdown-button-component"
-    );
-    this.showDropdownButton = document.createElement(
-      "show-dropdown-button-component"
-    );
+    this.hideDropdownButton = document.createElement("hide-dropdown-button");
+    this.showDropdownButton = document.createElement("show-dropdown-button");
 
     this.init();
 

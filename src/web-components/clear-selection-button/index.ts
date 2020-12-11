@@ -75,7 +75,7 @@
   }
 
   window.customElements.define(
-    "clear-selection-button-component",
+    "clear-selection-button",
     ClearSelectionButtonComponent
   );
 })();

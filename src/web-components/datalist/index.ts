@@ -13,7 +13,7 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
       }
     </style>
     <ul class="datalist">
-      <datalist-item-component value="All" data-id="all"></datalist-item-component>
+      <results-datalist-item value="All" data-id="all"></results-datalist-item>
     </ul>
   `;
 
@@ -94,7 +94,7 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
     }
 
     private createListItem(name: string, dataId: string): HTMLElement {
-      const item = document.createElement("datalist-item-component");
+      const item = document.createElement("results-datalist-item");
 
       item.setAttribute("value", name);
       item.setAttribute("data-id", dataId);
@@ -115,5 +115,5 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
     }
   }
 
-  window.customElements.define("datalist-component", Datalist);
+  window.customElements.define("results-datalist", Datalist);
 })();

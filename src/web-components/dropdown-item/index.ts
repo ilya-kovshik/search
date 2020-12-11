@@ -110,5 +110,5 @@
     }
   }
 
-  window.customElements.define("dropdown-item-component", DropdownItem);
+  window.customElements.define("dropdown-list-item", DropdownItem);
 })();

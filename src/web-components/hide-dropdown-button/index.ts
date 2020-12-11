@@ -76,7 +76,7 @@
   }
 
   window.customElements.define(
-    "hide-dropdown-button-component",
+    "hide-dropdown-button",
     HideDropdownButtonComponent
   );
 })();
