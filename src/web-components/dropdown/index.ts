@@ -5,7 +5,6 @@ import { IUserModelItem } from "../../interfaces/IUserModelItem";
 
   template.innerHTML = `
         <style>
-          @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
           .dropdown {
             position: absolute;
             margin: 5px 0 0 0;

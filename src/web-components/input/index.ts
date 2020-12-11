@@ -3,7 +3,6 @@
 
   template.innerHTML = `
       <style>
-        @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
         .search-input {
             padding-left: 1em;
             width: 100%;
