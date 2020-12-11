@@ -37,30 +37,6 @@
       return this.getInput()?.value;
     }
 
-    private attributeChangedCallback(
-      name: string,
-      oval: string | null,
-      newv: string
-    ) {
-      if (name === "value") {
-        const li = this.shadowRoot?.querySelector("li");
-
-        if (!li) {
-          return;
-        }
-
-        let html = `
-            <span>${newv}</span>
-          `;
-
-        if (newv !== "All") {
-          html += '<span class="fas fa-times"></span>';
-        }
-
-        li.innerHTML = html;
-      }
-    }
-
     private getInput() {
       return this.shadowRoot?.querySelector("input");
     }
